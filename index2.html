@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Martens Tattoo — Get Inked</title>
+<link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Spectral:ital,wght@0,200;0,300;0,400;1,200;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #080808;
+  --deep: #0e0e0e;
+  --border: #1e1e1e;
+  --white: #e8e4dc;
+  --cream: #d4cfc4;
+  --dim: #6b6660;
+  --faint: #3a3733;
+  --ghost: #2a2824;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Spectral', serif;
+  overflow-x: hidden;
+}
+
+/* Grain overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+::selection { background: rgba(228,224,216,0.15); }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--faint); }
+
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 1.2rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(8,8,8,0.7);
+  backdrop-filter: blur(30px);
+  transition: all 0.5s;
+}
+
+nav.scrolled { padding: 0.8rem 3rem; background: rgba(8,8,8,0.92); }
+
+.nav-logo { height: 40px; width: auto; }
+
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+
+.nav-links a {
+  color: var(--dim);
+  text-decoration: none;
+  font-family: 'Spectral', serif;
+  font-size: 0.8rem;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 2px;
+  transition: color 0.4s;
+}
+
+.nav-links a:hover { color: var(--cream); }
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 5px;
+}
+
+.hamburger span { width: 24px; height: 1px; background: var(--cream); transition: all 0.3s; }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: url('hero.png') center/cover no-repeat;
+  filter: brightness(0.3);
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.4rem, 4vw, 2.8rem);
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 6px;
+  color: var(--cream);
+  animation: fadeIn 1.5s ease 0.4s both;
+  text-shadow: 0 2px 30px rgba(0,0,0,0.6);
+}
+
+.hero-divider {
+  width: 40px; height: 1px;
+  background: var(--dim);
+  margin: 1.5rem auto;
+  animation: fadeIn 1.5s ease 0.8s both;
+}
+
+.hero-cta {
+  animation: fadeIn 1.5s ease 1s both;
+}
+
+.btn-ghost {
+  display: inline-block;
+  font-family: 'Spectral', serif;
+  font-size: 0.8rem;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 4px;
+  color: var(--cream);
+  text-decoration: none;
+  padding: 1rem 3rem;
+  border: 1px solid var(--faint);
+  transition: all 0.5s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ghost::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cream);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: -1;
+}
+
+.btn-ghost:hover { color: var(--black); border-color: var(--cream); }
+.btn-ghost:hover::before { transform: scaleX(1); }
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  z-index: 2;
+  animation: fadeIn 1.5s ease 1.5s both;
+}
+
+.scroll-indicator span {
+  font-size: 0.6rem;
+  font-style: italic;
+  letter-spacing: 4px;
+  color: var(--faint);
+}
+
+.scroll-dot {
+  width: 1px; height: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.scroll-dot::after {
+  content: '';
+  position: absolute;
+  top: -100%; left: 0;
+  width: 1px; height: 100%;
+  background: var(--dim);
+  animation: scrollDot 2s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollDot {
+  0% { top: -100%; } 50% { top: 0; } 100% { top: 100%; }
+}
+
+/* ─── SECTIONS ─── */
+section { padding: 7rem 3rem; max-width: 1000px; margin: 0 auto; }
+
+.section-label {
+  font-size: 0.65rem;
+  font-style: italic;
+  font-weight: 200;
+  letter-spacing: 5px;
+  color: var(--faint);
+  text-transform: lowercase;
+  margin-bottom: 1.5rem;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 300;
+  line-height: 1.25;
+  color: var(--cream);
+  margin-bottom: 1rem;
+}
+
+.section-line { width: 30px; height: 1px; background: var(--faint); margin: 2rem 0; }
+
+/* ─── ABOUT ─── */
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  margin-top: 1rem;
+}
+
+.about-text p {
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 2;
+  color: var(--dim);
+  margin-bottom: 1.5rem;
+}
+
+.about-text p em { color: var(--cream); font-weight: 400; }
+
+.about-details { display: flex; flex-direction: column; gap: 2.5rem; padding-top: 0.5rem; }
+
+.detail-item { position: relative; padding-left: 1.5rem; }
+
+.detail-item::before {
+  content: '\25C6';
+  position: absolute;
+  left: 0; top: 2px;
+  font-size: 0.45rem;
+  color: var(--faint);
+}
+
+.detail-label {
+  font-size: 0.6rem;
+  font-style: italic;
+  letter-spacing: 4px;
+  color: var(--faint);
+  text-transform: lowercase;
+  margin-bottom: 0.4rem;
+}
+
+.detail-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: var(--cream);
+}
+
+/* ─── DIVIDER ─── */
+.full-divider { max-width: 1000px; margin: 0 auto; padding: 0 3rem; }
+
+.full-divider-line {
+  width: 100%; height: 1px;
+  background: var(--border);
+  position: relative;
+}
+
+.full-divider-line::before {
+  content: '\25C6';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.5rem;
+  color: var(--faint);
+  background: var(--black);
+  padding: 0 1rem;
+}
+
+/* ─── GALLERY ─── */
+.gallery-filters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.gallery-filter {
+  background: none;
+  border: none;
+  font-family: 'Spectral', serif;
+  font-size: 0.75rem;
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: 3px;
+  color: var(--faint);
+  cursor: pointer;
+  padding: 0.3rem 0;
+  position: relative;
+  text-transform: lowercase;
+  transition: color 0.3s;
+}
+
+.gallery-filter::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 50%;
+  width: 0; height: 1px;
+  background: var(--cream);
+  transition: all 0.3s;
+  transform: translateX(-50%);
+}
+
+.gallery-filter:hover { color: var(--dim); }
+.gallery-filter.active { color: var(--cream); }
+.gallery-filter.active::after { width: 20px; }
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+  margin-top: 2rem;
+}
+
+.gallery-item {
+  aspect-ratio: 1;
+  background: var(--deep);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.6s;
+}
+
+.gallery-item.hidden { display: none; }
+
+.gallery-item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s;
+  filter: grayscale(30%);
+}
+
+.gallery-item:hover img { transform: scale(1.05); filter: grayscale(0%); }
+
+.gallery-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid transparent;
+  transition: border-color 0.5s;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.gallery-item:hover::before { border-color: rgba(228,224,216,0.15); }
+
+.gallery-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(8,8,8,0.3);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.gallery-item:hover::after { opacity: 1; }
+
+.gallery-view-more { display: flex; justify-content: center; margin-top: 3rem; }
+
+.view-more-btn {
+  font-family: 'Spectral', serif;
+  font-size: 0.75rem;
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: 4px;
+  color: var(--dim);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.8rem 2rem;
+  transition: color 0.4s;
+  position: relative;
+}
+
+.view-more-btn::before,
+.view-more-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 30px; height: 1px;
+  background: var(--faint);
+  transition: background 0.4s;
+}
+
+.view-more-btn::before { right: 100%; margin-right: 1rem; }
+.view-more-btn::after { left: 100%; margin-left: 1rem; }
+.view-more-btn:hover { color: var(--cream); }
+.view-more-btn:hover::before, .view-more-btn:hover::after { background: var(--dim); }
+
+/* ─── LIGHTBOX ─── */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(5,5,5,0.97);
+  backdrop-filter: blur(20px);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.lightbox.open { display: flex; opacity: 1; }
+
+.lightbox-inner {
+  position: relative;
+  max-width: 90vw;
+  max-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-img {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border: 1px solid var(--border);
+  animation: lbIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes lbIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.lightbox-close, .lightbox-prev, .lightbox-next {
+  position: absolute;
+  background: none;
+  border: 1px solid var(--faint);
+  color: var(--cream);
+  cursor: pointer;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  width: 44px; height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s;
+  z-index: 10001;
+}
+
+.lightbox-close { top: 2rem; right: 2rem; }
+.lightbox-prev { top: 50%; left: 2rem; transform: translateY(-50%); }
+.lightbox-next { top: 50%; right: 2rem; transform: translateY(-50%); }
+
+.lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover {
+  border-color: var(--cream);
+  background: var(--cream);
+  color: var(--black);
+}
+
+.lightbox-counter {
+  position: absolute;
+  bottom: 2rem; left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  font-style: italic;
+  letter-spacing: 3px;
+  color: var(--dim);
+}
+
+.lightbox-caption {
+  position: absolute;
+  top: 2rem; left: 2rem;
+  font-size: 0.7rem;
+  font-style: italic;
+  letter-spacing: 3px;
+  color: var(--faint);
+  text-transform: lowercase;
+}
+
+/* ─── STYLES / SERVICES ─── */
+.services-list { margin-top: 2.5rem; }
+
+.service-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 1.8rem 0;
+  border-bottom: 1px solid var(--border);
+  cursor: default;
+  transition: all 0.4s;
+}
+
+.service-item:first-child { border-top: 1px solid var(--border); }
+.service-item:hover { padding-left: 1rem; }
+
+.service-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 300;
+  color: var(--cream);
+  transition: color 0.4s;
+}
+
+.service-item:hover .service-name { color: var(--white); }
+
+.service-desc {
+  font-size: 0.8rem;
+  font-style: italic;
+  font-weight: 200;
+  color: var(--faint);
+  text-align: right;
+  max-width: 40%;
+  transition: color 0.4s;
+}
+
+.service-item:hover .service-desc { color: var(--dim); }
+
+/* ─── PROCESS ─── */
+.process-grid {
+  margin-top: 2.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3rem;
+}
+
+.process-step { position: relative; padding-left: 2.5rem; }
+
+.process-num {
+  position: absolute;
+  left: 0; top: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--faint);
+}
+
+.process-step h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--cream);
+  margin-bottom: 0.6rem;
+}
+
+.process-step p { font-size: 0.85rem; font-weight: 200; color: var(--dim); line-height: 1.8; }
+
+/* ─── CONTACT ─── */
+.contact-section { text-align: center; padding: 8rem 3rem; }
+.contact-section .section-title { font-size: clamp(2rem, 5vw, 3.2rem); }
+
+.ornament {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 2rem 0;
+  opacity: 0.35;
+}
+
+.ornament span {
+  width: 6px; height: 6px;
+  border: 1px solid var(--cream);
+  transform: rotate(45deg);
+}
+
+.contact-grid {
+  display: flex;
+  justify-content: center;
+  gap: 5rem;
+  margin-top: 3rem;
+  flex-wrap: wrap;
+}
+
+.contact-block { text-align: center; }
+
+.contact-label {
+  font-size: 0.6rem;
+  font-style: italic;
+  letter-spacing: 4px;
+  color: var(--faint);
+  text-transform: lowercase;
+  margin-bottom: 0.6rem;
+}
+
+.contact-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: var(--cream);
+}
+
+.contact-value a {
+  color: var(--cream);
+  text-decoration: none;
+  transition: color 0.3s;
+  border-bottom: 1px solid var(--ghost);
+}
+
+.contact-value a:hover { color: var(--white); border-color: var(--dim); }
+
+.contact-cta { margin-top: 3.5rem; }
+
+/* ─── FOOTER ─── */
+footer {
+  padding: 3rem;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+
+footer p {
+  font-size: 0.65rem;
+  font-style: italic;
+  font-weight: 200;
+  letter-spacing: 3px;
+  color: var(--faint);
+}
+
+/* ─── REVEAL ─── */
+.reveal {
+  opacity: 0;
+  transform: translateY(25px);
+  transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 800px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: rgba(8,8,8,0.97);
+    padding: 2rem 1.5rem;
+    gap: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  section { padding: 5rem 1.5rem; }
+  .about-content { grid-template-columns: 1fr; gap: 3rem; }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  .gallery-filters { gap: 1rem; }
+  .service-desc { display: none; }
+  .process-grid { grid-template-columns: 1fr; }
+  .contact-grid { gap: 2.5rem; }
+  .contact-section { padding: 5rem 1.5rem; }
+  .lightbox-close { top: 1rem; right: 1rem; }
+  .lightbox-prev { left: 1rem; }
+  .lightbox-next { right: 1rem; }
+  .lightbox-caption { top: 1rem; left: 1rem; font-size: 0.6rem; }
+}
+
+@media (max-width: 480px) {
+  .contact-grid { flex-direction: column; gap: 2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#"><img src="logo.png" alt="Martens Tattoo" class="nav-logo"></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#o-nama">o nama</a></li>
+    <li><a href="#galerija">galerija</a></li>
+    <li><a href="#stilovi">stilovi</a></li>
+    <li><a href="#proces">proces</a></li>
+    <li><a href="#kontakt">kontakt</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <p class="hero-tagline">svaki rad priča tvoju priču</p>
+    <div class="hero-divider"></div>
+    <div class="hero-cta">
+      <a href="#kontakt" class="btn-ghost">zakaži termin</a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>scroll</span>
+    <div class="scroll-dot"></div>
+  </div>
+</section>
+
+<!-- O NAMA -->
+<section id="o-nama">
+  <div class="reveal">
+    <span class="section-label">— o studiju</span>
+    <h2 class="section-title">Umjetnost<br>ispisana na koži</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-content">
+    <div class="about-text reveal">
+      <p>Martens Tattoo je prostor posvećen <em>autentičnom izrazu</em> i preciznoj izvedbi. Svaka tetovaža nastaje u dijalogu s klijentom — od prve skice do posljednje linije.</p>
+      <p>Studio koristi isključivo <em>premium opremu i pigmente</em>, u potpuno sterilnom okruženju. Tvoje zdravlje i povjerenje su temelj svega što radimo.</p>
+    </div>
+    <div class="about-details reveal">
+      <div class="detail-item">
+        <p class="detail-label">— godina iskustva</p>
+        <p class="detail-value">10+</p>
+      </div>
+      <div class="detail-item">
+        <p class="detail-label">— dovršenih radova</p>
+        <p class="detail-value">2000+</p>
+      </div>
+      <div class="detail-item">
+        <p class="detail-label">— pristup</p>
+        <p class="detail-value">Isključivo po narudžbi</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="full-divider"><div class="full-divider-line"></div></div>
+
+<!-- GALERIJA -->
+<section id="galerija">
+  <div class="reveal">
+    <span class="section-label">— portfolio</span>
+    <h2 class="section-title">Odabrani radovi</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="gallery-filters reveal">
+    <button class="gallery-filter active" data-filter="all">sve</button>
+    <button class="gallery-filter" data-filter="blackwork">blackwork</button>
+    <button class="gallery-filter" data-filter="realism">realism</button>
+    <button class="gallery-filter" data-filter="fineline">fine line</button>
+    <button class="gallery-filter" data-filter="dotwork">dotwork</button>
+    <button class="gallery-filter" data-filter="neotrad">neo-traditional</button>
+  </div>
+  <div class="gallery-grid reveal" id="galleryGrid">
+    <div class="gallery-item" data-style="blackwork" data-caption="Blackwork · Podlaktica"><img src="https://picsum.photos/seed/tattoo1/600/600" alt="Rad 1" loading="lazy"></div>
+    <div class="gallery-item" data-style="realism" data-caption="Realism · Rame"><img src="https://picsum.photos/seed/tattoo2/600/600" alt="Rad 2" loading="lazy"></div>
+    <div class="gallery-item" data-style="fineline" data-caption="Fine Line · Ruka"><img src="https://picsum.photos/seed/tattoo3/600/600" alt="Rad 3" loading="lazy"></div>
+    <div class="gallery-item" data-style="dotwork" data-caption="Dotwork · Leđa"><img src="https://picsum.photos/seed/tattoo4/600/600" alt="Rad 4" loading="lazy"></div>
+    <div class="gallery-item" data-style="blackwork" data-caption="Blackwork · Noga"><img src="https://picsum.photos/seed/tattoo5/600/600" alt="Rad 5" loading="lazy"></div>
+    <div class="gallery-item" data-style="neotrad" data-caption="Neo-Traditional · Bedro"><img src="https://picsum.photos/seed/tattoo6/600/600" alt="Rad 6" loading="lazy"></div>
+    <div class="gallery-item" data-style="realism" data-caption="Realism · Podlaktica"><img src="https://picsum.photos/seed/tattoo7/600/600" alt="Rad 7" loading="lazy"></div>
+    <div class="gallery-item" data-style="fineline" data-caption="Fine Line · Rebra"><img src="https://picsum.photos/seed/tattoo8/600/600" alt="Rad 8" loading="lazy"></div>
+    <div class="gallery-item" data-style="blackwork" data-caption="Blackwork · Ruka"><img src="https://picsum.photos/seed/tattoo9/600/600" alt="Rad 9" loading="lazy"></div>
+    <div class="gallery-item" data-style="dotwork" data-caption="Dotwork · Rame"><img src="https://picsum.photos/seed/tattoo10/600/600" alt="Rad 10" loading="lazy"></div>
+    <div class="gallery-item" data-style="neotrad" data-caption="Neo-Traditional · Prsa"><img src="https://picsum.photos/seed/tattoo11/600/600" alt="Rad 11" loading="lazy"></div>
+    <div class="gallery-item" data-style="realism" data-caption="Realism · Bedro"><img src="https://picsum.photos/seed/tattoo12/600/600" alt="Rad 12" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="blackwork" data-caption="Blackwork · Leđa"><img src="https://picsum.photos/seed/tattoo13/600/600" alt="Rad 13" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="fineline" data-caption="Fine Line · Vrat"><img src="https://picsum.photos/seed/tattoo14/600/600" alt="Rad 14" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="realism" data-caption="Realism · Noga"><img src="https://picsum.photos/seed/tattoo15/600/600" alt="Rad 15" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="dotwork" data-caption="Dotwork · Podlaktica"><img src="https://picsum.photos/seed/tattoo16/600/600" alt="Rad 16" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="blackwork" data-caption="Blackwork · Prsa"><img src="https://picsum.photos/seed/tattoo17/600/600" alt="Rad 17" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="neotrad" data-caption="Neo-Traditional · Ruka"><img src="https://picsum.photos/seed/tattoo18/600/600" alt="Rad 18" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="fineline" data-caption="Fine Line · Gleženj"><img src="https://picsum.photos/seed/tattoo19/600/600" alt="Rad 19" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="realism" data-caption="Realism · Leđa"><img src="https://picsum.photos/seed/tattoo20/600/600" alt="Rad 20" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="blackwork" data-caption="Blackwork · Bedro"><img src="https://picsum.photos/seed/tattoo21/600/600" alt="Rad 21" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="dotwork" data-caption="Dotwork · Rebra"><img src="https://picsum.photos/seed/tattoo22/600/600" alt="Rad 22" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="neotrad" data-caption="Neo-Traditional · Podlaktica"><img src="https://picsum.photos/seed/tattoo23/600/600" alt="Rad 23" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="realism" data-caption="Realism · Rame"><img src="https://picsum.photos/seed/tattoo24/600/600" alt="Rad 24" loading="lazy"></div>
+  </div>
+  <div class="gallery-view-more reveal">
+    <button class="view-more-btn" id="viewMoreBtn">prikaži sve radove</button>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+  <button class="lightbox-close" id="lightboxClose">✕</button>
+  <button class="lightbox-prev" id="lightboxPrev">‹</button>
+  <div class="lightbox-inner">
+    <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  </div>
+  <button class="lightbox-next" id="lightboxNext">›</button>
+  <div class="lightbox-counter" id="lightboxCounter"></div>
+</div>
+
+<div class="full-divider"><div class="full-divider-line"></div></div>
+
+<!-- STILOVI -->
+<section id="stilovi">
+  <div class="reveal">
+    <span class="section-label">— specijalnosti</span>
+    <h2 class="section-title">Stilovi</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="services-list">
+    <div class="service-item reveal"><span class="service-name">Blackwork</span><span class="service-desc">geometrija, tribal, ornamentalni dizajni</span></div>
+    <div class="service-item reveal"><span class="service-name">Realism</span><span class="service-desc">portreti, priroda, fotorealistično sjenčanje</span></div>
+    <div class="service-item reveal"><span class="service-name">Neo-Traditional</span><span class="service-desc">boldni obrisi, bogate boje, moderni motivi</span></div>
+    <div class="service-item reveal"><span class="service-name">Dotwork</span><span class="service-desc">mandala, sacred geometry, ornamentalni rad</span></div>
+    <div class="service-item reveal"><span class="service-name">Fine Line</span><span class="service-desc">delikatne linije, minimalistički dizajn</span></div>
+    <div class="service-item reveal"><span class="service-name">Custom</span><span class="service-desc">potpuno prilagođeno — tvoja ideja, naša izvedba</span></div>
+  </div>
+</section>
+
+<div class="full-divider"><div class="full-divider-line"></div></div>
+
+<!-- PROCES -->
+<section id="proces">
+  <div class="reveal">
+    <span class="section-label">— kako radimo</span>
+    <h2 class="section-title">Od ideje<br>do tetovaže</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="process-grid">
+    <div class="process-step reveal"><span class="process-num">i.</span><h3>Konzultacija</h3><p>Razgovaramo o tvojoj ideji, stilu, veličini i poziciji. Besplatno, bez obaveze.</p></div>
+    <div class="process-step reveal"><span class="process-num">ii.</span><h3>Dizajn</h3><p>Kreiramo unikatan dizajn prilagođen tebi. Revizije do potpunog zadovoljstva.</p></div>
+    <div class="process-step reveal"><span class="process-num">iii.</span><h3>Tetoviranje</h3><p>Profesionalna izvedba u sterilnom okruženju s premium materijalima.</p></div>
+    <div class="process-step reveal"><span class="process-num">iv.</span><h3>Aftercare</h3><p>Detaljne upute za njegu i besplatna kontrola nakon zacjeljivanja.</p></div>
+  </div>
+</section>
+
+<div class="full-divider"><div class="full-divider-line"></div></div>
+
+<!-- KONTAKT -->
+<section class="contact-section" id="kontakt">
+  <div class="reveal">
+    <span class="section-label">— kontakt</span>
+    <h2 class="section-title">Zakaži termin</h2>
+    <div class="ornament"><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+  <div class="contact-grid reveal">
+    <div class="contact-block"><p class="contact-label">— telefon</p><p class="contact-value"><a href="tel:+385991234567">+385 99 123 4567</a></p></div>
+    <div class="contact-block"><p class="contact-label">— email</p><p class="contact-value"><a href="mailto:info@martenstattoo.com">info@martenstattoo.com</a></p></div>
+    <div class="contact-block"><p class="contact-label">— instagram</p><p class="contact-value"><a href="#">@martenstattoo</a></p></div>
+    <div class="contact-block"><p class="contact-label">— radno vrijeme</p><p class="contact-value">Pon — Sub · 10 – 20h</p></div>
+  </div>
+  <div class="contact-cta reveal">
+    <a href="mailto:info@martenstattoo.com" class="btn-ghost">pošalji upit</a>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 Martens Tattoo · get inked</p>
+</footer>
+
+<script>
+/* Nav */
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
+
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+/* Reveal on scroll */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* Gallery filters + view more */
+const filterBtns = document.querySelectorAll('.gallery-filter');
+const galleryItems = document.querySelectorAll('.gallery-item');
+const viewMoreBtn = document.getElementById('viewMoreBtn');
+let showingAll = false, activeFilter = 'all';
+
+function applyFilter() {
+  galleryItems.forEach(item => {
+    const match = activeFilter === 'all' || item.dataset.style === activeFilter;
+    const isExtra = item.classList.contains('hidden-extra');
+    if (!match) { item.classList.add('hidden'); return; }
+    (activeFilter !== 'all' || showingAll || !isExtra) ? item.classList.remove('hidden') : item.classList.add('hidden');
+  });
+  viewMoreBtn.style.display = (activeFilter !== 'all' || showingAll) ? 'none' : 'inline-block';
+}
+
+filterBtns.forEach(btn => btn.addEventListener('click', () => {
+  filterBtns.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeFilter = btn.dataset.filter;
+  applyFilter();
+}));
+
+viewMoreBtn.addEventListener('click', () => { showingAll = true; applyFilter(); });
+
+/* Lightbox */
+const lb = document.getElementById('lightbox');
+const lbImg = document.getElementById('lightboxImg');
+const lbCap = document.getElementById('lightboxCaption');
+const lbCount = document.getElementById('lightboxCounter');
+let lbIdx = 0, lbVisible = [];
+
+function lbOpen(i) {
+  lbVisible = [...galleryItems].filter(x => !x.classList.contains('hidden'));
+  lbIdx = i; lbUpdate();
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function lbClose() { lb.classList.remove('open'); document.body.style.overflow = ''; }
+
+function lbUpdate() {
+  const item = lbVisible[lbIdx], img = item.querySelector('img');
+  lbImg.src = img.src; lbImg.alt = img.alt;
+  lbCap.textContent = item.dataset.caption || '';
+  lbCount.textContent = `${String(lbIdx + 1).padStart(2, '0')} — ${String(lbVisible.length).padStart(2, '0')}`;
+}
+
+function lbNext() { lbIdx = (lbIdx + 1) % lbVisible.length; lbUpdate(); }
+function lbPrev() { lbIdx = (lbIdx - 1 + lbVisible.length) % lbVisible.length; lbUpdate(); }
+
+galleryItems.forEach(item => item.addEventListener('click', () => {
+  const vis = [...galleryItems].filter(x => !x.classList.contains('hidden'));
+  const i = vis.indexOf(item);
+  if (i >= 0) lbOpen(i);
+}));
+
+document.getElementById('lightboxClose').addEventListener('click', lbClose);
+document.getElementById('lightboxPrev').addEventListener('click', lbPrev);
+document.getElementById('lightboxNext').addEventListener('click', lbNext);
+lb.addEventListener('click', (e) => { if (e.target === lb) lbClose(); });
+document.addEventListener('keydown', (e) => {
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'Escape') lbClose();
+  if (e.key === 'ArrowRight') lbNext();
+  if (e.key === 'ArrowLeft') lbPrev();
+});
+</script>
+</body>
+</html>
