@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Martens Tattoo — Get Inked</title>
+<link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Spectral:ital,wght@0,200;0,300;0,400;1,200;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #080808;
+  --deep: #0e0e0e;
+  --card: #131313;
+  --border: #1e1e1e;
+  --white: #e8e4dc;
+  --cream: #d4cfc4;
+  --dim: #6b6660;
+  --faint: #3a3733;
+  --ghost: #2a2824;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Spectral', serif;
+  overflow-x: hidden;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+::selection { background: rgba(228,224,216,0.15); }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--faint); }
+
+.ornament {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 2rem 0;
+  opacity: 0.35;
+}
+.ornament span {
+  width: 6px; height: 6px;
+  border: 1px solid var(--cream);
+  transform: rotate(45deg);
+}
+
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 1.5rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(8,8,8,0.7);
+  backdrop-filter: blur(30px);
+  transition: all 0.5s;
+}
+
+nav.scrolled { padding: 1rem 3rem; background: rgba(8,8,8,0.92); }
+
+.nav-brand {
+  font-family: 'Uncial Antiqua', serif;
+  font-size: 1.1rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--cream);
+  text-decoration: none;
+}
+
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+
+.nav-links a {
+  color: var(--dim);
+  text-decoration: none;
+  font-family: 'Spectral', serif;
+  font-size: 0.8rem;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 2px;
+  transition: color 0.4s;
+}
+
+.nav-links a:hover { color: var(--cream); }
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 5px;
+}
+.hamburger span {
+  width: 24px; height: 1px;
+  background: var(--cream);
+  transition: all 0.3s;
+}
+
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(228,224,216,0.025) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-ring {
+  position: absolute;
+  width: 520px; height: 520px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(228,224,216,0.04);
+  animation: ringRotate 120s linear infinite;
+  pointer-events: none;
+}
+
+.hero-ring::before,
+.hero-ring::after {
+  content: '';
+  position: absolute;
+  width: 8px; height: 8px;
+  border: 1px solid rgba(228,224,216,0.12);
+  transform: rotate(45deg);
+}
+
+.hero-ring::before { top: -4px; left: 50%; margin-left: -4px; }
+.hero-ring::after { bottom: -4px; left: 50%; margin-left: -4px; }
+
+.hero-ring-2 {
+  position: absolute;
+  width: 560px; height: 560px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(228,224,216,0.02);
+  animation: ringRotate 180s linear infinite reverse;
+  pointer-events: none;
+}
+
+@keyframes ringRotate { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+.hero-logo {
+  width: min(320px, 65vw);
+  position: relative;
+  z-index: 2;
+  animation: logoFade 2s ease-out;
+  filter: drop-shadow(0 0 80px rgba(228,224,216,0.04));
+}
+
+@keyframes logoFade {
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.hero-divider {
+  width: 40px; height: 1px;
+  background: var(--dim);
+  margin: 2rem auto;
+  position: relative;
+  z-index: 2;
+  animation: fadeIn 1.5s ease 0.6s both;
+}
+
+.hero-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.8rem, 1.5vw, 0.95rem);
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 6px;
+  color: var(--dim);
+  position: relative;
+  z-index: 2;
+  animation: fadeIn 1.5s ease 0.8s both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  animation: fadeIn 1.5s ease 1.5s both;
+}
+
+.scroll-indicator span {
+  font-family: 'Spectral', serif;
+  font-size: 0.6rem;
+  font-style: italic;
+  letter-spacing: 4px;
+  color: var(--faint);
+}
+
+.scroll-dot {
+  width: 1px; height: 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.scroll-dot::after {
+  content: '';
+  position: absolute;
+  top: -100%; left: 0;
+  width: 1px; height: 100%;
+  background: var(--dim);
+  animation: scrollDot 2s ease-in-out infinite;
+}
+
+@keyframes scrollDot {
+  0% { top: -100%; }
+  50% { top: 0; }
+  100% { top: 100%; }
+}
+
+section { padding: 7rem 3rem; max-width: 1000px; margin: 0 auto; }
+
+.section-label {
+  font-family: 'Spectral', serif;
+  font-size: 0.65rem;
+  font-style: italic;
+  font-weight: 200;
+  letter-spacing: 5px;
+  color: var(--faint);
+  text-transform: lowercase;
+  margin-bottom: 1.5rem;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 300;
+  line-height: 1.25;
+  color: var(--cream);
+  margin-bottom: 1rem;
+}
+
+.section-line {
+  width: 30px; height: 1px;
+  background: var(--faint);
+  margin: 2rem 0;
+}
+
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  margin-top: 1rem;
+}
+
+.about-text p {
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 2;
+  color: var(--dim);
+  margin-bottom: 1.5rem;
+}
+
+.about-text p em {
+  color: var(--cream);
+  font-weight: 400;
+}
+
+.about-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding-top: 0.5rem;
+}
+
+.detail-item {
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.detail-item::before {
+  content: '\25C6';
+  position: absolute;
+  left: 0; top: 2px;
+  font-size: 0.45rem;
+  color: var(--faint);
+}
+
+.detail-label {
+  font-size: 0.6rem;
+  font-style: italic;
+  letter-spacing: 4px;
+  color: var(--faint);
+  text-transform: lowercase;
+  margin-bottom: 0.4rem;
+}
+
+.detail-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: var(--cream);
+}
+
+.full-divider {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 3rem;
+}
+
+.full-divider-line {
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+  position: relative;
+}
+
+.full-divider-line::before {
+  content: '\25C6';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.5rem;
+  color: var(--faint);
+  background: var(--black);
+  padding: 0 1rem;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 3px;
+  margin-top: 2rem;
+}
+
+.gallery-filters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.gallery-filter {
+  background: none;
+  border: none;
+  font-family: 'Spectral', serif;
+  font-size: 0.75rem;
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: 3px;
+  color: var(--faint);
+  cursor: pointer;
+  padding: 0.3rem 0;
+  position: relative;
+  text-transform: lowercase;
+  transition: color 0.3s;
+}
+
+.gallery-filter::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 50%;
+  width: 0;
+  height: 1px;
+  background: var(--cream);
+  transition: all 0.3s;
+  transform: translateX(-50%);
+}
+
+.gallery-filter:hover { color: var(--dim); }
+.gallery-filter.active { color: var(--cream); }
+.gallery-filter.active::after { width: 20px; }
+
+.gallery-item {
+  aspect-ratio: 1;
+  background: var(--deep);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.6s;
+}
+
+.gallery-item.hidden {
+  display: none;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s;
+  filter: grayscale(30%);
+}
+
+.gallery-item:hover img {
+  transform: scale(1.05);
+  filter: grayscale(0%);
+}
+
+.gallery-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid transparent;
+  transition: border-color 0.5s;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.gallery-item:hover::before { border-color: rgba(228,224,216,0.15); }
+
+/* Hover overlay with view icon */
+.gallery-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(8,8,8,0.3);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.gallery-item:hover::after { opacity: 1; }
+
+.gallery-view-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+.view-more-btn {
+  font-family: 'Spectral', serif;
+  font-size: 0.75rem;
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: 4px;
+  color: var(--dim);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.8rem 2rem;
+  transition: color 0.4s;
+  position: relative;
+}
+
+.view-more-btn::before,
+.view-more-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 30px;
+  height: 1px;
+  background: var(--faint);
+  transition: background 0.4s;
+}
+
+.view-more-btn::before { right: 100%; margin-right: 1rem; }
+.view-more-btn::after { left: 100%; margin-left: 1rem; }
+
+.view-more-btn:hover { color: var(--cream); }
+.view-more-btn:hover::before,
+.view-more-btn:hover::after { background: var(--dim); }
+
+/* ─── LIGHTBOX ─── */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 5, 5, 0.97);
+  backdrop-filter: blur(20px);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.lightbox.open {
+  display: flex;
+  opacity: 1;
+}
+
+.lightbox-inner {
+  position: relative;
+  max-width: 90vw;
+  max-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-img {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  border: 1px solid var(--border);
+  animation: lightboxIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes lightboxIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+  position: absolute;
+  background: none;
+  border: 1px solid var(--faint);
+  color: var(--cream);
+  cursor: pointer;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  transition: all 0.4s;
+  z-index: 10001;
+}
+
+.lightbox-close {
+  top: 2rem;
+  right: 2rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-prev,
+.lightbox-next {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-prev { left: 2rem; }
+.lightbox-next { right: 2rem; }
+
+.lightbox-close:hover,
+.lightbox-prev:hover,
+.lightbox-next:hover {
+  border-color: var(--cream);
+  background: var(--cream);
+  color: var(--black);
+}
+
+.lightbox-counter {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Spectral', serif;
+  font-size: 0.75rem;
+  font-style: italic;
+  letter-spacing: 3px;
+  color: var(--dim);
+}
+
+.lightbox-caption {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  font-family: 'Spectral', serif;
+  font-size: 0.7rem;
+  font-style: italic;
+  letter-spacing: 3px;
+  color: var(--faint);
+  text-transform: lowercase;
+}
+
+.services-list {
+  margin-top: 2.5rem;
+}
+
+.service-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 1.8rem 0;
+  border-bottom: 1px solid var(--border);
+  cursor: default;
+  transition: all 0.4s;
+}
+
+.service-item:first-child { border-top: 1px solid var(--border); }
+.service-item:hover { padding-left: 1rem; }
+
+.service-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 300;
+  color: var(--cream);
+  transition: color 0.4s;
+}
+
+.service-item:hover .service-name { color: var(--white); }
+
+.service-desc {
+  font-size: 0.8rem;
+  font-style: italic;
+  font-weight: 200;
+  color: var(--faint);
+  text-align: right;
+  max-width: 40%;
+  transition: color 0.4s;
+}
+
+.service-item:hover .service-desc { color: var(--dim); }
+
+.process-grid {
+  margin-top: 2.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 3rem;
+}
+
+.process-step {
+  position: relative;
+  padding-left: 2.5rem;
+}
+
+.process-num {
+  position: absolute;
+  left: 0; top: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--faint);
+}
+
+.process-step h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--cream);
+  margin-bottom: 0.6rem;
+}
+
+.process-step p {
+  font-size: 0.85rem;
+  font-weight: 200;
+  color: var(--dim);
+  line-height: 1.8;
+}
+
+.contact-section {
+  text-align: center;
+  padding: 8rem 3rem;
+}
+
+.contact-section .section-title {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+}
+
+.contact-grid {
+  display: flex;
+  justify-content: center;
+  gap: 5rem;
+  margin-top: 3rem;
+  flex-wrap: wrap;
+}
+
+.contact-block { text-align: center; }
+
+.contact-label {
+  font-size: 0.6rem;
+  font-style: italic;
+  letter-spacing: 4px;
+  color: var(--faint);
+  text-transform: lowercase;
+  margin-bottom: 0.6rem;
+}
+
+.contact-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: var(--cream);
+}
+
+.contact-value a {
+  color: var(--cream);
+  text-decoration: none;
+  transition: color 0.3s;
+  border-bottom: 1px solid var(--ghost);
+}
+
+.contact-value a:hover { color: var(--white); border-color: var(--dim); }
+
+.contact-cta { margin-top: 3.5rem; }
+
+.btn-ghost {
+  display: inline-block;
+  font-family: 'Spectral', serif;
+  font-size: 0.8rem;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 4px;
+  color: var(--cream);
+  text-decoration: none;
+  padding: 1rem 3rem;
+  border: 1px solid var(--faint);
+  transition: all 0.5s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ghost::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cream);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: -1;
+}
+
+.btn-ghost:hover { color: var(--black); border-color: var(--cream); }
+.btn-ghost:hover::before { transform: scaleX(1); }
+
+footer {
+  padding: 3rem;
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+
+footer p {
+  font-size: 0.65rem;
+  font-style: italic;
+  font-weight: 200;
+  letter-spacing: 3px;
+  color: var(--faint);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(25px);
+  transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 800px) {
+  nav { padding: 1.2rem 1.5rem; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: rgba(8,8,8,0.97);
+    padding: 2rem 1.5rem;
+    gap: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  section { padding: 5rem 1.5rem; }
+  .about-content { grid-template-columns: 1fr; gap: 3rem; }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  .gallery-filters { gap: 1rem; }
+  .lightbox-close { top: 1rem; right: 1rem; }
+  .lightbox-prev { left: 1rem; }
+  .lightbox-next { right: 1rem; }
+  .lightbox-caption { top: 1rem; left: 1rem; font-size: 0.6rem; }
+  .service-desc { display: none; }
+  .process-grid { grid-template-columns: 1fr; }
+  .contact-grid { gap: 2.5rem; }
+  .contact-section { padding: 5rem 1.5rem; }
+  .hero-ring, .hero-ring-2 { display: none; }
+}
+
+@media (max-width: 480px) {
+  .hero-logo { width: 240px; }
+  .contact-grid { flex-direction: column; gap: 2rem; }
+}
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="#" class="nav-brand">Martens</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#o-nama">o nama</a></li>
+    <li><a href="#galerija">galerija</a></li>
+    <li><a href="#stilovi">stilovi</a></li>
+    <li><a href="#proces">proces</a></li>
+    <li><a href="#kontakt">kontakt</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<section class="hero">
+  <div class="hero-ring"></div>
+  <div class="hero-ring-2"></div>
+  <!-- LOGO PLACEHOLDER — zamijeni s <img src="logo.png"> kad imaš finalni -->
+  <svg class="hero-logo" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#e8e4dc">
+    <!-- Outer dashed diamond ring -->
+    <circle cx="200" cy="200" r="155" stroke-width="1" stroke-dasharray="2 8" opacity="0.5"/>
+    <!-- Inner ornamental ring of diamonds -->
+    <g transform="translate(200 200)">
+      <g id="diamondRing">
+        <!-- 24 small diamonds around a circle radius 135 -->
+      </g>
+    </g>
+    <!-- Text arc top: MARTENS TATTOO -->
+    <defs>
+      <path id="topArc" d="M 60 200 A 140 140 0 0 1 340 200"/>
+      <path id="btmArc" d="M 70 215 A 130 130 0 0 0 330 215"/>
+    </defs>
+    <text font-family="Cormorant Garamond, serif" font-size="26" letter-spacing="8" fill="#e8e4dc" stroke="none">
+      <textPath href="#topArc" startOffset="50%" text-anchor="middle">MARTENS TATTOO</textPath>
+    </text>
+    <text font-family="Cormorant Garamond, serif" font-size="22" letter-spacing="8" fill="#e8e4dc" stroke="none">
+      <textPath href="#btmArc" startOffset="50%" text-anchor="middle">GET INKED</textPath>
+    </text>
+    <!-- Big M in center, gothic style using bold serif -->
+    <text x="200" y="245" font-family="Uncial Antiqua, serif" font-size="140" fill="#e8e4dc" stroke="none" text-anchor="middle">M</text>
+    <!-- Small star ornaments -->
+    <g fill="#e8e4dc" stroke="none" opacity="0.7">
+      <circle cx="70" cy="210" r="1.5"/>
+      <circle cx="330" cy="210" r="1.5"/>
+      <circle cx="85" cy="240" r="1"/>
+      <circle cx="315" cy="240" r="1"/>
+    </g>
+  </svg>
+  <script>
+    // Generate diamond ring programmatically
+    (function(){
+      const ring = document.getElementById('diamondRing');
+      if (!ring) return;
+      const count = 32;
+      const radius = 138;
+      for (let i = 0; i < count; i++) {
+        const angle = (i / count) * Math.PI * 2;
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+        const d = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        d.setAttribute('x', -3);
+        d.setAttribute('y', -3);
+        d.setAttribute('width', 6);
+        d.setAttribute('height', 6);
+        d.setAttribute('fill', '#e8e4dc');
+        d.setAttribute('opacity', '0.5');
+        d.setAttribute('transform', `translate(${x} ${y}) rotate(45)`);
+        ring.appendChild(d);
+      }
+    })();
+  </script>
+  <div class="hero-divider"></div>
+  <p class="hero-tagline">svaki rad priča tvoju priču</p>
+  <div class="scroll-indicator">
+    <span>scroll</span>
+    <div class="scroll-dot"></div>
+  </div>
+</section>
+
+<section id="o-nama">
+  <div class="reveal">
+    <span class="section-label">— o studiju</span>
+    <h2 class="section-title">Umjetnost<br>ispisana na koži</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-content">
+    <div class="about-text reveal">
+      <p>Martens Tattoo je prostor posvećen <em>autentičnom izrazu</em> i preciznoj izvedbi. Svaka tetovaža nastaje u dijalogu s klijentom — od prve skice do posljednje linije.</p>
+      <p>Studio koristi isključivo <em>premium opremu i pigmente</em>, u potpuno sterilnom okruženju. Tvoje zdravlje i povjerenje su temelj svega što radimo.</p>
+    </div>
+    <div class="about-details reveal">
+      <div class="detail-item">
+        <p class="detail-label">— godina iskustva</p>
+        <p class="detail-value">10+</p>
+      </div>
+      <div class="detail-item">
+        <p class="detail-label">— dovršenih radova</p>
+        <p class="detail-value">2000+</p>
+      </div>
+      <div class="detail-item">
+        <p class="detail-label">— pristup</p>
+        <p class="detail-value">Isključivo po narudžbi</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="full-divider"><div class="full-divider-line"></div></div>
+
+<section id="galerija">
+  <div class="reveal">
+    <span class="section-label">— portfolio</span>
+    <h2 class="section-title">Odabrani radovi</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="gallery-filters reveal">
+    <button class="gallery-filter active" data-filter="all">sve</button>
+    <button class="gallery-filter" data-filter="blackwork">blackwork</button>
+    <button class="gallery-filter" data-filter="realism">realism</button>
+    <button class="gallery-filter" data-filter="fineline">fine line</button>
+    <button class="gallery-filter" data-filter="dotwork">dotwork</button>
+    <button class="gallery-filter" data-filter="neotrad">neo-traditional</button>
+  </div>
+
+  <div class="gallery-grid reveal" id="galleryGrid">
+    <!-- Placeholder images from picsum — zamijeni s pravim fotkama radova -->
+    <div class="gallery-item" data-style="blackwork" data-caption="Blackwork · Podlaktica"><img src="https://picsum.photos/seed/tattoo1/600/600" alt="Rad 1" loading="lazy"></div>
+    <div class="gallery-item" data-style="realism" data-caption="Realism · Rame"><img src="https://picsum.photos/seed/tattoo2/600/600" alt="Rad 2" loading="lazy"></div>
+    <div class="gallery-item" data-style="fineline" data-caption="Fine Line · Ruka"><img src="https://picsum.photos/seed/tattoo3/600/600" alt="Rad 3" loading="lazy"></div>
+    <div class="gallery-item" data-style="dotwork" data-caption="Dotwork · Leđa"><img src="https://picsum.photos/seed/tattoo4/600/600" alt="Rad 4" loading="lazy"></div>
+    <div class="gallery-item" data-style="blackwork" data-caption="Blackwork · Noga"><img src="https://picsum.photos/seed/tattoo5/600/600" alt="Rad 5" loading="lazy"></div>
+    <div class="gallery-item" data-style="neotrad" data-caption="Neo-Traditional · Bedro"><img src="https://picsum.photos/seed/tattoo6/600/600" alt="Rad 6" loading="lazy"></div>
+    <div class="gallery-item" data-style="realism" data-caption="Realism · Podlaktica"><img src="https://picsum.photos/seed/tattoo7/600/600" alt="Rad 7" loading="lazy"></div>
+    <div class="gallery-item" data-style="fineline" data-caption="Fine Line · Rebra"><img src="https://picsum.photos/seed/tattoo8/600/600" alt="Rad 8" loading="lazy"></div>
+    <div class="gallery-item" data-style="blackwork" data-caption="Blackwork · Ruka"><img src="https://picsum.photos/seed/tattoo9/600/600" alt="Rad 9" loading="lazy"></div>
+    <div class="gallery-item" data-style="dotwork" data-caption="Dotwork · Rame"><img src="https://picsum.photos/seed/tattoo10/600/600" alt="Rad 10" loading="lazy"></div>
+    <div class="gallery-item" data-style="neotrad" data-caption="Neo-Traditional · Prsa"><img src="https://picsum.photos/seed/tattoo11/600/600" alt="Rad 11" loading="lazy"></div>
+    <div class="gallery-item" data-style="realism" data-caption="Realism · Bedro"><img src="https://picsum.photos/seed/tattoo12/600/600" alt="Rad 12" loading="lazy"></div>
+
+    <!-- Sakriveni radovi — otkrivaju se klikom na "prikaži sve" -->
+    <div class="gallery-item hidden-extra hidden" data-style="blackwork" data-caption="Blackwork · Leđa"><img src="https://picsum.photos/seed/tattoo13/600/600" alt="Rad 13" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="fineline" data-caption="Fine Line · Vrat"><img src="https://picsum.photos/seed/tattoo14/600/600" alt="Rad 14" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="realism" data-caption="Realism · Noga"><img src="https://picsum.photos/seed/tattoo15/600/600" alt="Rad 15" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="dotwork" data-caption="Dotwork · Podlaktica"><img src="https://picsum.photos/seed/tattoo16/600/600" alt="Rad 16" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="blackwork" data-caption="Blackwork · Prsa"><img src="https://picsum.photos/seed/tattoo17/600/600" alt="Rad 17" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="neotrad" data-caption="Neo-Traditional · Ruka"><img src="https://picsum.photos/seed/tattoo18/600/600" alt="Rad 18" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="fineline" data-caption="Fine Line · Gleženj"><img src="https://picsum.photos/seed/tattoo19/600/600" alt="Rad 19" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="realism" data-caption="Realism · Leđa"><img src="https://picsum.photos/seed/tattoo20/600/600" alt="Rad 20" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="blackwork" data-caption="Blackwork · Bedro"><img src="https://picsum.photos/seed/tattoo21/600/600" alt="Rad 21" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="dotwork" data-caption="Dotwork · Rebra"><img src="https://picsum.photos/seed/tattoo22/600/600" alt="Rad 22" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="neotrad" data-caption="Neo-Traditional · Podlaktica"><img src="https://picsum.photos/seed/tattoo23/600/600" alt="Rad 23" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="realism" data-caption="Realism · Rame"><img src="https://picsum.photos/seed/tattoo24/600/600" alt="Rad 24" loading="lazy"></div>
+  </div>
+
+  <div class="gallery-view-more reveal">
+    <button class="view-more-btn" id="viewMoreBtn">prikaži sve radove</button>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Galerija radova">
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+  <button class="lightbox-close" id="lightboxClose" aria-label="Zatvori">✕</button>
+  <button class="lightbox-prev" id="lightboxPrev" aria-label="Prethodni">‹</button>
+  <div class="lightbox-inner">
+    <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  </div>
+  <button class="lightbox-next" id="lightboxNext" aria-label="Sljedeći">›</button>
+  <div class="lightbox-counter" id="lightboxCounter"></div>
+</div>
+
+<div class="full-divider"><div class="full-divider-line"></div></div>
+
+<section id="stilovi">
+  <div class="reveal">
+    <span class="section-label">— specijalnosti</span>
+    <h2 class="section-title">Stilovi</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="services-list">
+    <div class="service-item reveal">
+      <span class="service-name">Blackwork</span>
+      <span class="service-desc">geometrija, tribal, ornamentalni dizajni</span>
+    </div>
+    <div class="service-item reveal">
+      <span class="service-name">Realism</span>
+      <span class="service-desc">portreti, priroda, fotorealistično sjenčanje</span>
+    </div>
+    <div class="service-item reveal">
+      <span class="service-name">Neo-Traditional</span>
+      <span class="service-desc">boldni obrisi, bogate boje, moderni motivi</span>
+    </div>
+    <div class="service-item reveal">
+      <span class="service-name">Dotwork</span>
+      <span class="service-desc">mandala, sacred geometry, ornamentalni rad</span>
+    </div>
+    <div class="service-item reveal">
+      <span class="service-name">Fine Line</span>
+      <span class="service-desc">delikatne linije, minimalistički dizajn</span>
+    </div>
+    <div class="service-item reveal">
+      <span class="service-name">Custom</span>
+      <span class="service-desc">potpuno prilagođeno — tvoja ideja, naša izvedba</span>
+    </div>
+  </div>
+</section>
+
+<div class="full-divider"><div class="full-divider-line"></div></div>
+
+<section id="proces">
+  <div class="reveal">
+    <span class="section-label">— kako radimo</span>
+    <h2 class="section-title">Od ideje<br>do tetovaže</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="process-grid">
+    <div class="process-step reveal">
+      <span class="process-num">i.</span>
+      <h3>Konzultacija</h3>
+      <p>Razgovaramo o tvojoj ideji, stilu, veličini i poziciji. Besplatno, bez obaveze.</p>
+    </div>
+    <div class="process-step reveal">
+      <span class="process-num">ii.</span>
+      <h3>Dizajn</h3>
+      <p>Kreiramo unikatan dizajn prilagođen tebi. Revizije do potpunog zadovoljstva.</p>
+    </div>
+    <div class="process-step reveal">
+      <span class="process-num">iii.</span>
+      <h3>Tetoviranje</h3>
+      <p>Profesionalna izvedba u sterilnom okruženju s premium materijalima.</p>
+    </div>
+    <div class="process-step reveal">
+      <span class="process-num">iv.</span>
+      <h3>Aftercare</h3>
+      <p>Detaljne upute za njegu i besplatna kontrola nakon zacjeljivanja.</p>
+    </div>
+  </div>
+</section>
+
+<div class="full-divider"><div class="full-divider-line"></div></div>
+
+<section class="contact-section" id="kontakt">
+  <div class="reveal">
+    <span class="section-label">— kontakt</span>
+    <h2 class="section-title">Zakaži termin</h2>
+    <div class="ornament"><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+  <div class="contact-grid reveal">
+    <div class="contact-block">
+      <p class="contact-label">— telefon</p>
+      <p class="contact-value"><a href="tel:+385991234567">+385 99 123 4567</a></p>
+    </div>
+    <div class="contact-block">
+      <p class="contact-label">— email</p>
+      <p class="contact-value"><a href="mailto:info@martenstattoo.com">info@martenstattoo.com</a></p>
+    </div>
+    <div class="contact-block">
+      <p class="contact-label">— instagram</p>
+      <p class="contact-value"><a href="#">@martenstattoo</a></p>
+    </div>
+    <div class="contact-block">
+      <p class="contact-label">— radno vrijeme</p>
+      <p class="contact-value">Pon — Sub · 10 – 20h</p>
+    </div>
+  </div>
+  <div class="contact-cta reveal">
+    <a href="mailto:info@martenstattoo.com" class="btn-ghost">pošalji upit</a>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 Martens Tattoo · get inked</p>
+</footer>
+
+<script>
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
+
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ─── GALLERY: FILTERS + VIEW MORE ─── */
+const filterBtns = document.querySelectorAll('.gallery-filter');
+const galleryItems = document.querySelectorAll('.gallery-item');
+const viewMoreBtn = document.getElementById('viewMoreBtn');
+let showingAll = false;
+let activeFilter = 'all';
+
+function applyFilter() {
+  galleryItems.forEach(item => {
+    const style = item.dataset.style;
+    const isExtra = item.classList.contains('hidden-extra');
+    const matchesFilter = (activeFilter === 'all' || style === activeFilter);
+
+    if (!matchesFilter) {
+      item.classList.add('hidden');
+      return;
+    }
+    // Filter matches — show if filter is active, or if showing all, or if not extra
+    if (activeFilter !== 'all' || showingAll || !isExtra) {
+      item.classList.remove('hidden');
+    } else {
+      item.classList.add('hidden');
+    }
+  });
+
+  // Hide "view more" when filter is active or already showing all
+  if (activeFilter !== 'all' || showingAll) {
+    viewMoreBtn.style.display = 'none';
+  } else {
+    viewMoreBtn.style.display = 'inline-block';
+  }
+}
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    applyFilter();
+  });
+});
+
+viewMoreBtn.addEventListener('click', () => {
+  showingAll = true;
+  applyFilter();
+  viewMoreBtn.style.display = 'none';
+});
+
+/* ─── LIGHTBOX ─── */
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxCaption = document.getElementById('lightboxCaption');
+const lightboxCounter = document.getElementById('lightboxCounter');
+const lightboxClose = document.getElementById('lightboxClose');
+const lightboxPrev = document.getElementById('lightboxPrev');
+const lightboxNext = document.getElementById('lightboxNext');
+
+let currentIndex = 0;
+let visibleItems = [];
+
+function openLightbox(index) {
+  visibleItems = Array.from(galleryItems).filter(i => !i.classList.contains('hidden'));
+  currentIndex = index;
+  updateLightbox();
+  lightbox.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function updateLightbox() {
+  if (visibleItems.length === 0) return;
+  const item = visibleItems[currentIndex];
+  const img = item.querySelector('img');
+  lightboxImg.src = img.src;
+  lightboxImg.alt = img.alt;
+  lightboxCaption.textContent = item.dataset.caption || '';
+  lightboxCounter.textContent = `${String(currentIndex + 1).padStart(2, '0')} — ${String(visibleItems.length).padStart(2, '0')}`;
+}
+
+function nextImg() {
+  currentIndex = (currentIndex + 1) % visibleItems.length;
+  updateLightbox();
+}
+
+function prevImg() {
+  currentIndex = (currentIndex - 1 + visibleItems.length) % visibleItems.length;
+  updateLightbox();
+}
+
+galleryItems.forEach((item) => {
+  item.addEventListener('click', (e) => {
+    e.stopPropagation(); // prevent ink splatter on gallery clicks
+    const visible = Array.from(galleryItems).filter(i => !i.classList.contains('hidden'));
+    const idx = visible.indexOf(item);
+    if (idx >= 0) openLightbox(idx);
+  });
+});
+
+lightboxClose.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
+lightboxPrev.addEventListener('click', (e) => { e.stopPropagation(); prevImg(); });
+lightboxNext.addEventListener('click', (e) => { e.stopPropagation(); nextImg(); });
+
+lightbox.addEventListener('click', (e) => {
+  if (e.target === lightbox) closeLightbox();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (!lightbox.classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowRight') nextImg();
+  if (e.key === 'ArrowLeft') prevImg();
+});
+
+/* ─── INK SPLATTER ON CLICK ─── */
+const inkCanvas = document.createElement('canvas');
+inkCanvas.id = 'inkCanvas';
+inkCanvas.style.cssText = 'position:fixed;inset:0;z-index:9998;pointer-events:none;';
+document.body.appendChild(inkCanvas);
+const ctx = inkCanvas.getContext('2d');
+
+function resizeInk() {
+  inkCanvas.width = window.innerWidth;
+  inkCanvas.height = window.innerHeight;
+}
+resizeInk();
+window.addEventListener('resize', resizeInk);
+
+const splatters = [];
+
+function createSplatter(x, y) {
+  // Main blob
+  const blobCount = 4 + Math.floor(Math.random() * 5);
+  const baseRadius = 12 + Math.random() * 18;
+  const blobs = [];
+
+  for (let i = 0; i < blobCount; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const dist = i === 0 ? 0 : Math.random() * baseRadius * 1.8;
+    const r = (i === 0 ? baseRadius : 3 + Math.random() * baseRadius * 0.6);
+    blobs.push({
+      x: x + Math.cos(angle) * dist,
+      y: y + Math.sin(angle) * dist,
+      r: r,
+      wobble: 0.3 + Math.random() * 0.5,
+      angle: Math.random() * Math.PI * 2,
+    });
+  }
+
+  // Tiny droplets flying out
+  const droplets = [];
+  const dropCount = 5 + Math.floor(Math.random() * 8);
+  for (let i = 0; i < dropCount; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 1.5 + Math.random() * 4;
+    droplets.push({
+      x: x,
+      y: y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      r: 1 + Math.random() * 3,
+      life: 1,
+    });
+  }
+
+  // Thin splatter lines
+  const lines = [];
+  const lineCount = 3 + Math.floor(Math.random() * 4);
+  for (let i = 0; i < lineCount; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const len = 20 + Math.random() * 40;
+    lines.push({
+      x1: x + Math.cos(angle) * baseRadius * 0.5,
+      y1: y + Math.sin(angle) * baseRadius * 0.5,
+      x2: x + Math.cos(angle) * (baseRadius * 0.5 + len),
+      y2: y + Math.sin(angle) * (baseRadius * 0.5 + len),
+      width: 0.5 + Math.random() * 1.5,
+      life: 1,
+    });
+  }
+
+  splatters.push({
+    blobs, droplets, lines,
+    opacity: 0.7 + Math.random() * 0.3,
+    fadeStart: Date.now() + 1500 + Math.random() * 1000,
+    born: Date.now(),
+  });
+}
+
+function drawBlob(blob, alpha) {
+  ctx.save();
+  ctx.translate(blob.x, blob.y);
+  ctx.rotate(blob.angle);
+  ctx.scale(1, blob.wobble);
+  ctx.beginPath();
+  // Organic shape using bezier noise
+  const pts = 8;
+  for (let i = 0; i <= pts; i++) {
+    const a = (i / pts) * Math.PI * 2;
+    const noise = 0.7 + Math.random() * 0.05; // subtle per-frame jitter for organic feel on first draw
+    const rx = blob.r * noise;
+    const ry = blob.r * noise;
+    const px = Math.cos(a) * rx;
+    const py = Math.sin(a) * ry;
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+  ctx.fillStyle = `rgba(232, 228, 220, ${alpha * 0.12})`;
+  ctx.fill();
+  ctx.restore();
+}
+
+function animate() {
+  ctx.clearRect(0, 0, inkCanvas.width, inkCanvas.height);
+  const now = Date.now();
+
+  for (let s = splatters.length - 1; s >= 0; s--) {
+    const sp = splatters[s];
+    const age = now - sp.born;
+    let alpha = sp.opacity;
+
+    if (now > sp.fadeStart) {
+      const fadeDur = 2500;
+      alpha *= Math.max(0, 1 - (now - sp.fadeStart) / fadeDur);
+    }
+
+    if (alpha <= 0.001) {
+      splatters.splice(s, 1);
+      continue;
+    }
+
+    // Draw main blobs
+    sp.blobs.forEach(b => {
+      ctx.beginPath();
+      ctx.save();
+      ctx.translate(b.x, b.y);
+      ctx.rotate(b.angle);
+      ctx.scale(1, b.wobble);
+      ctx.arc(0, 0, b.r, 0, Math.PI * 2);
+      ctx.restore();
+      ctx.fillStyle = `rgba(232, 228, 220, ${alpha * 0.08})`;
+      ctx.fill();
+    });
+
+    // Droplets
+    sp.droplets.forEach(d => {
+      if (age < 300) {
+        d.x += d.vx;
+        d.y += d.vy;
+        d.vx *= 0.94;
+        d.vy *= 0.94;
+      }
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(232, 228, 220, ${alpha * 0.1})`;
+      ctx.fill();
+    });
+
+    // Splatter lines
+    sp.lines.forEach(l => {
+      ctx.beginPath();
+      ctx.moveTo(l.x1, l.y1);
+      ctx.lineTo(l.x2, l.y2);
+      ctx.strokeStyle = `rgba(232, 228, 220, ${alpha * 0.06})`;
+      ctx.lineWidth = l.width;
+      ctx.stroke();
+    });
+  }
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+document.addEventListener('click', (e) => {
+  // Skip ink splatter on interactive elements and gallery/lightbox
+  if (e.target.closest('.gallery-item, .lightbox, .gallery-filter, .view-more-btn, a, button')) return;
+  createSplatter(e.clientX, e.clientY);
+});
+</script>
+</body>
+</html>
