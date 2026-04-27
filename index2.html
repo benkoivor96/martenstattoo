@@ -4,38 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Martens Tattoo — Get Inked</title>
-<link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Spectral:ital,wght@0,200;0,300;0,400;1,200;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&family=Spectral:ital,wght@0,200;0,300;0,400;1,200;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
-  --black: #080808;
-  --deep: #0e0e0e;
+  --black: #000000;
+  --deep: #050505;
   --border: #1e1e1e;
   --white: #e8e4dc;
   --cream: #d4cfc4;
-  --dim: #6b6660;
-  --faint: #3a3733;
+  --dim: #8a8580;
+  --faint: #555049;
   --ghost: #2a2824;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  background: #000 !important;
+}
 
 body {
-  background: var(--black);
+  background: #000 !important;
   color: var(--white);
   font-family: 'Spectral', serif;
   overflow-x: hidden;
 }
 
-/* Grain overlay */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9999;
-}
+/* Grain overlay removed */
 
 ::selection { background: rgba(228,224,216,0.15); }
 ::-webkit-scrollbar { width: 4px; }
@@ -58,7 +53,7 @@ nav {
 
 nav.scrolled { padding: 0.8rem 3rem; background: rgba(8,8,8,0.92); }
 
-.nav-logo { height: 65px; width: auto; }
+.nav-logo { height: 32px; width: auto; }
 
 .nav-links { display: flex; gap: 2.5rem; list-style: none; }
 
@@ -101,9 +96,7 @@ nav.scrolled { padding: 0.8rem 3rem; background: rgba(8,8,8,0.92); }
 .hero-bg {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  background: url('hero.png') center/cover no-repeat;
   filter: brightness(0.3);
   z-index: 0;
 }
@@ -114,11 +107,10 @@ nav.scrolled { padding: 0.8rem 3rem; background: rgba(8,8,8,0.92); }
 }
 
 .hero-tagline {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Cinzel Decorative', serif;
   font-size: clamp(1.4rem, 4vw, 2.8rem);
-  font-weight: 300;
-  font-style: italic;
-  letter-spacing: 6px;
+  font-weight: 400;
+  letter-spacing: 4px;
   color: var(--cream);
   animation: fadeIn 1.5s ease 0.4s both;
   text-shadow: 0 2px 30px rgba(0,0,0,0.6);
@@ -223,7 +215,7 @@ section { padding: 7rem 3rem; max-width: 1000px; margin: 0 auto; }
 }
 
 .section-title {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Cinzel Decorative', serif;
   font-size: clamp(1.8rem, 4vw, 2.8rem);
   font-weight: 300;
   line-height: 1.25;
@@ -273,9 +265,9 @@ section { padding: 7rem 3rem; max-width: 1000px; margin: 0 auto; }
 }
 
 .detail-value {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Cinzel', serif;
   font-size: 1.5rem;
-  font-weight: 300;
+  font-weight: 400;
   color: var(--cream);
 }
 
@@ -467,7 +459,7 @@ section { padding: 7rem 3rem; max-width: 1000px; margin: 0 auto; }
   border: 1px solid var(--faint);
   color: var(--cream);
   cursor: pointer;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Cinzel', serif;
   font-size: 1.2rem;
   width: 44px; height: 44px;
   display: flex;
@@ -508,42 +500,69 @@ section { padding: 7rem 3rem; max-width: 1000px; margin: 0 auto; }
 }
 
 /* ─── STYLES / SERVICES ─── */
-.services-list { margin-top: 2.5rem; }
-
-.service-item {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  padding: 1.8rem 0;
-  border-bottom: 1px solid var(--border);
-  cursor: default;
-  transition: all 0.4s;
+.services-grid {
+  margin-top: 2.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--black);
 }
 
-.service-item:first-child { border-top: 1px solid var(--border); }
-.service-item:hover { padding-left: 1rem; }
+.service-card {
+  background: var(--black);
+  padding: 2.5rem 2rem;
+  position: relative;
+  cursor: default;
+  transition: all 0.5s;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: var(--cream);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.service-card:hover::before { transform: scaleX(1); }
+.service-card:hover { background: var(--deep); }
+
+.service-num {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  color: var(--faint);
+  margin-bottom: 1.5rem;
+  display: block;
+}
 
 .service-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.4rem;
-  font-weight: 300;
+  font-family: 'Cinzel', serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 2px;
   color: var(--cream);
+  margin-bottom: 0.8rem;
   transition: color 0.4s;
 }
 
-.service-item:hover .service-name { color: var(--white); }
+.service-card:hover .service-name { color: var(--white); }
 
 .service-desc {
   font-size: 0.8rem;
   font-style: italic;
   font-weight: 200;
   color: var(--faint);
-  text-align: right;
-  max-width: 40%;
+  line-height: 1.7;
   transition: color 0.4s;
 }
 
-.service-item:hover .service-desc { color: var(--dim); }
+.service-card:hover .service-desc { color: var(--dim); }
 
 /* ─── PROCESS ─── */
 .process-grid {
@@ -558,14 +577,14 @@ section { padding: 7rem 3rem; max-width: 1000px; margin: 0 auto; }
 .process-num {
   position: absolute;
   left: 0; top: 0;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Cinzel', serif;
   font-size: 0.85rem;
   font-style: italic;
   color: var(--faint);
 }
 
 .process-step h3 {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Cinzel', serif;
   font-size: 1.15rem;
   font-weight: 400;
   color: var(--cream);
@@ -612,7 +631,7 @@ section { padding: 7rem 3rem; max-width: 1000px; margin: 0 auto; }
 }
 
 .contact-value {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Cinzel', serif;
   font-size: 1.1rem;
   font-weight: 300;
   color: var(--cream);
@@ -674,7 +693,7 @@ footer p {
   .about-content { grid-template-columns: 1fr; gap: 3rem; }
   .gallery-grid { grid-template-columns: repeat(2, 1fr); }
   .gallery-filters { gap: 1rem; }
-  .service-desc { display: none; }
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
   .process-grid { grid-template-columns: 1fr; }
   .contact-grid { gap: 2.5rem; }
   .contact-section { padding: 5rem 1.5rem; }
@@ -693,7 +712,7 @@ footer p {
 
 <!-- NAV -->
 <nav id="navbar">
-  <a href="#"><img src="logo.png" alt="Martens Tattoo" class="nav-logo"></a>
+  <a href="#"><img src="logomartens.png" alt="Martens Tattoo" class="nav-logo"></a>
   <ul class="nav-links" id="navLinks">
     <li><a href="#o-nama">o nama</a></li>
     <li><a href="#galerija">galerija</a></li>
@@ -708,9 +727,7 @@ footer p {
 
 <!-- HERO -->
 <section class="hero">
-  <video class="hero-bg" autoplay muted loop playsinline>
-  <source src="hero.mp4" type="video/mp4">
-</video>
+  <div class="hero-bg"></div>
   <div class="hero-content">
     <p class="hero-tagline">svaki rad priča tvoju priču</p>
     <div class="hero-divider"></div>
@@ -822,13 +839,37 @@ footer p {
     <h2 class="section-title">Stilovi</h2>
     <div class="section-line"></div>
   </div>
-  <div class="services-list">
-    <div class="service-item reveal"><span class="service-name">Blackwork</span><span class="service-desc">geometrija, tribal, ornamentalni dizajni</span></div>
-    <div class="service-item reveal"><span class="service-name">Realism</span><span class="service-desc">portreti, priroda, fotorealistično sjenčanje</span></div>
-    <div class="service-item reveal"><span class="service-name">Neo-Traditional</span><span class="service-desc">boldni obrisi, bogate boje, moderni motivi</span></div>
-    <div class="service-item reveal"><span class="service-name">Dotwork</span><span class="service-desc">mandala, sacred geometry, ornamentalni rad</span></div>
-    <div class="service-item reveal"><span class="service-name">Fine Line</span><span class="service-desc">delikatne linije, minimalistički dizajn</span></div>
-    <div class="service-item reveal"><span class="service-name">Custom</span><span class="service-desc">potpuno prilagođeno — tvoja ideja, naša izvedba</span></div>
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <span class="service-num">01</span>
+      <h3 class="service-name">Blackwork</h3>
+      <p class="service-desc">Geometrija, tribal, ornamentalni dizajni s dubokim kontrastom i snažnim crnim površinama.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-num">02</span>
+      <h3 class="service-name">Realism</h3>
+      <p class="service-desc">Fotorealistični portreti, priroda i životinje s preciznim sjenčanjem i detaljima.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-num">03</span>
+      <h3 class="service-name">Neo-Traditional</h3>
+      <p class="service-desc">Boldni obrisi, bogate boje i moderne interpretacije klasičnih motiva.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-num">04</span>
+      <h3 class="service-name">Dotwork</h3>
+      <p class="service-desc">Mandala, sacred geometry i ornamentalni radovi izrađeni preciznim točkicama.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-num">05</span>
+      <h3 class="service-name">Fine Line</h3>
+      <p class="service-desc">Delikatne linije, minimalistički dizajni i elegantni motivi za suptilni izraz.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-num">06</span>
+      <h3 class="service-name">Custom</h3>
+      <p class="service-desc">Potpuno prilagođeni dizajni. Donesite ideju, zajedno je pretvaramo u remek-djelo.</p>
+    </div>
   </div>
 </section>
 
