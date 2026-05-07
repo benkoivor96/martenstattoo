@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Martens Tattoo — Get Inked</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&family=Spectral:ital,wght@0,200;0,300;0,400;1,200;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #000000;
+  --deep: #050505;
+  --border: #1e1e1e;
+  --white: #e8e4dc;
+  --cream: #d4cfc4;
+  --dim: #8a8580;
+  --faint: #555049;
+  --ghost: #2a2824;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; background: #000 !important; }
+body { background: #000 !important; color: var(--white); font-family: 'Spectral', serif; overflow-x: hidden; }
+::selection { background: rgba(228,224,216,0.15); }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--faint); }
+
+/* ─── INK CANVAS ─── */
+#inkCanvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99999;
+}
+
+/* ─── SIDE RULERS ─── */
+.side-ruler {
+  position: fixed;
+  top: 0; bottom: 0;
+  width: 28px;
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 0;
+  pointer-events: none;
+}
+.side-ruler-left { left: 0; }
+.side-ruler-right { right: 0; }
+.side-ruler-line {
+  flex: 1;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--border) 15%, var(--border) 85%, transparent);
+  position: relative;
+}
+.side-ruler-line::before,
+.side-ruler-line::after {
+  content: '';
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  width: 5px; height: 1px;
+  background: var(--faint);
+}
+.side-ruler-line::before { top: 25%; }
+.side-ruler-line::after  { top: 75%; }
+.side-ruler-diamond {
+  width: 5px; height: 5px;
+  border: 1px solid var(--faint);
+  transform: rotate(45deg);
+  margin: 6px 0;
+  flex-shrink: 0;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 1.2rem 3rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(8,8,8,0.7);
+  backdrop-filter: blur(30px);
+  transition: all 0.5s;
+}
+nav.scrolled { padding: 0.8rem 3rem; background: rgba(8,8,8,0.92); }
+.nav-logo { height: 65px; width: auto; }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a {
+  color: var(--dim);
+  text-decoration: none;
+  font-family: 'Spectral', serif;
+  font-size: 0.8rem;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 2px;
+  transition: color 0.4s;
+}
+.nav-links a:hover { color: var(--cream); }
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 5px;
+}
+.hamburger span { width: 24px; height: 1px; background: var(--cream); transition: all 0.3s; }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: brightness(0.22);
+  z-index: 0;
+}
+.hero-content { position: relative; z-index: 2; }
+.hero-tagline {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.4rem, 4vw, 2.8rem);
+  font-weight: 400;
+  letter-spacing: 4px;
+  color: var(--cream);
+  animation: fadeIn 1.5s ease 0.4s both;
+  text-shadow: 0 2px 30px rgba(0,0,0,0.6);
+}
+.hero-divider { width: 40px; height: 1px; background: var(--dim); margin: 1.5rem auto; animation: fadeIn 1.5s ease 0.8s both; }
+.hero-cta { animation: fadeIn 1.5s ease 1s both; }
+
+/* hero corner ornaments */
+.hero-corner {
+  position: absolute;
+  width: 60px; height: 60px;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.4;
+}
+.hero-corner svg { width: 100%; height: 100%; }
+.hero-corner-tl { top: 6rem; left: 3rem; }
+.hero-corner-tr { top: 6rem; right: 3rem; transform: scaleX(-1); }
+.hero-corner-bl { bottom: 5rem; left: 3rem; transform: scaleY(-1); }
+.hero-corner-br { bottom: 5rem; right: 3rem; transform: scale(-1); }
+
+.btn-ghost {
+  display: inline-block;
+  font-family: 'Spectral', serif;
+  font-size: 0.8rem;
+  font-weight: 300;
+  font-style: italic;
+  letter-spacing: 4px;
+  color: var(--cream);
+  text-decoration: none;
+  padding: 1rem 3rem;
+  border: 1px solid var(--faint);
+  transition: all 0.5s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-ghost::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cream);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: -1;
+}
+.btn-ghost:hover { color: var(--black); border-color: var(--cream); }
+.btn-ghost:hover::before { transform: scaleX(1); }
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 3rem; left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  z-index: 2;
+  animation: fadeIn 1.5s ease 1.5s both;
+}
+.scroll-indicator span { font-size: 0.6rem; font-style: italic; letter-spacing: 4px; color: var(--faint); }
+.scroll-dot { width: 1px; height: 30px; position: relative; overflow: hidden; }
+.scroll-dot::after {
+  content: '';
+  position: absolute;
+  top: -100%; left: 0;
+  width: 1px; height: 100%;
+  background: var(--dim);
+  animation: scrollDot 2s ease-in-out infinite;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scrollDot { 0% { top: -100%; } 50% { top: 0; } 100% { top: 100%; } }
+
+/* ─── SECTIONS ─── */
+section { padding: 7rem 3rem; max-width: 1000px; margin: 0 auto; }
+.section-label { font-size: 0.65rem; font-style: italic; font-weight: 200; letter-spacing: 5px; color: var(--faint); text-transform: lowercase; margin-bottom: 1.5rem; }
+.section-title { font-family: 'Cinzel Decorative', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 300; line-height: 1.25; color: var(--cream); margin-bottom: 1rem; }
+.section-line { width: 30px; height: 1px; background: var(--faint); margin: 2rem 0; }
+
+/* ─── TATTOO DIVIDER ─── */
+.full-divider { max-width: 1000px; margin: 0 auto; padding: 0 3rem; }
+.full-divider-line { width: 100%; height: 1px; background: var(--border); position: relative; }
+.full-divider-line::before {
+  content: '\25C6';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.5rem;
+  color: var(--faint);
+  background: var(--black);
+  padding: 0 1rem;
+}
+
+/* Ornamental divider (richer version) */
+.ornamental-divider {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 3rem;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.ornamental-divider .od-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.ornamental-divider .od-center {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 1rem;
+}
+.ornamental-divider .od-diamond {
+  width: 5px; height: 5px;
+  border: 1px solid var(--faint);
+  transform: rotate(45deg);
+  flex-shrink: 0;
+}
+.ornamental-divider .od-cross {
+  position: relative;
+  width: 10px; height: 10px;
+  flex-shrink: 0;
+}
+.ornamental-divider .od-cross::before,
+.ornamental-divider .od-cross::after {
+  content: '';
+  position: absolute;
+  background: var(--faint);
+}
+.ornamental-divider .od-cross::before { width: 10px; height: 1px; top: 50%; left: 0; transform: translateY(-50%); }
+.ornamental-divider .od-cross::after  { width: 1px; height: 10px; left: 50%; top: 0; transform: translateX(-50%); }
+.ornamental-divider .od-dot {
+  width: 3px; height: 3px;
+  background: var(--faint);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* side accent lines in sections */
+.section-accent {
+  position: relative;
+}
+.section-accent::before {
+  content: '';
+  position: absolute;
+  left: -2rem;
+  top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--border) 20%, var(--border) 80%, transparent);
+}
+
+/* ─── ABOUT ─── */
+.about-content { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 1rem; }
+.about-text p { font-size: 0.95rem; font-weight: 300; line-height: 2; color: var(--dim); margin-bottom: 1.5rem; }
+.about-text p em { color: var(--cream); font-weight: 400; }
+.about-details { display: flex; flex-direction: column; gap: 2.5rem; padding-top: 0.5rem; }
+.detail-item { position: relative; padding-left: 1.5rem; }
+.detail-item::before { content: '\25C6'; position: absolute; left: 0; top: 2px; font-size: 0.45rem; color: var(--faint); }
+.detail-label { font-size: 0.6rem; font-style: italic; letter-spacing: 4px; color: var(--faint); text-transform: lowercase; margin-bottom: 0.4rem; }
+.detail-value { font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: 400; color: var(--cream); }
+
+/* detail frame */
+.about-details-frame {
+  border: 1px solid var(--border);
+  padding: 2.5rem 2rem;
+  position: relative;
+}
+.about-details-frame::before,
+.about-details-frame::after {
+  content: '';
+  position: absolute;
+  width: 12px; height: 12px;
+  border-color: var(--faint);
+  border-style: solid;
+}
+.about-details-frame::before { top: -1px; left: -1px; border-width: 1px 0 0 1px; }
+.about-details-frame::after  { bottom: -1px; right: -1px; border-width: 0 1px 1px 0; }
+
+/* ─── GALLERY ─── */
+.gallery-filters { display: flex; justify-content: center; flex-wrap: wrap; gap: 2rem; margin-top: 2.5rem; margin-bottom: 1rem; }
+.gallery-filter { background: none; border: none; font-family: 'Spectral', serif; font-size: 0.75rem; font-style: italic; font-weight: 300; letter-spacing: 3px; color: var(--faint); cursor: pointer; padding: 0.3rem 0; position: relative; text-transform: lowercase; transition: color 0.3s; }
+.gallery-filter::after { content: ''; position: absolute; bottom: -2px; left: 50%; width: 0; height: 1px; background: var(--cream); transition: all 0.3s; transform: translateX(-50%); }
+.gallery-filter:hover { color: var(--dim); }
+.gallery-filter.active { color: var(--cream); }
+.gallery-filter.active::after { width: 20px; }
+.gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-top: 2rem; }
+.gallery-item { aspect-ratio: 1; background: var(--deep); position: relative; overflow: hidden; cursor: pointer; transition: all 0.6s; }
+.gallery-item.hidden { display: none; }
+.gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s; filter: grayscale(30%); }
+.gallery-item:hover img { transform: scale(1.05); filter: grayscale(0%); }
+.gallery-item::before { content: ''; position: absolute; inset: 0; border: 1px solid transparent; transition: border-color 0.5s; z-index: 2; pointer-events: none; }
+.gallery-item:hover::before { border-color: rgba(228,224,216,0.15); }
+.gallery-item::after { content: ''; position: absolute; inset: 0; background: rgba(8,8,8,0.3); opacity: 0; transition: opacity 0.4s; pointer-events: none; z-index: 1; }
+.gallery-item:hover::after { opacity: 1; }
+.gallery-view-more { display: flex; justify-content: center; margin-top: 3rem; }
+.view-more-btn { font-family: 'Spectral', serif; font-size: 0.75rem; font-style: italic; font-weight: 300; letter-spacing: 4px; color: var(--dim); background: none; border: none; cursor: pointer; padding: 0.8rem 2rem; transition: color 0.4s; position: relative; }
+.view-more-btn::before, .view-more-btn::after { content: ''; position: absolute; top: 50%; width: 30px; height: 1px; background: var(--faint); transition: background 0.4s; }
+.view-more-btn::before { right: 100%; margin-right: 1rem; }
+.view-more-btn::after  { left: 100%; margin-left: 1rem; }
+.view-more-btn:hover { color: var(--cream); }
+.view-more-btn:hover::before, .view-more-btn:hover::after { background: var(--dim); }
+
+/* ─── LIGHTBOX ─── */
+.lightbox { position: fixed; inset: 0; background: rgba(5,5,5,0.97); backdrop-filter: blur(20px); z-index: 10000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.5s; }
+.lightbox.open { display: flex; opacity: 1; }
+.lightbox-inner { position: relative; max-width: 90vw; max-height: 85vh; display: flex; align-items: center; justify-content: center; }
+.lightbox-img { max-width: 90vw; max-height: 85vh; object-fit: contain; border: 1px solid var(--border); animation: lbIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes lbIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+.lightbox-close, .lightbox-prev, .lightbox-next { position: absolute; background: none; border: 1px solid var(--faint); color: var(--cream); cursor: pointer; font-family: 'Cinzel', serif; font-size: 1.2rem; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; transition: all 0.4s; z-index: 10001; }
+.lightbox-close { top: 2rem; right: 2rem; }
+.lightbox-prev { top: 50%; left: 2rem; transform: translateY(-50%); }
+.lightbox-next { top: 50%; right: 2rem; transform: translateY(-50%); }
+.lightbox-close:hover, .lightbox-prev:hover, .lightbox-next:hover { border-color: var(--cream); background: var(--cream); color: var(--black); }
+.lightbox-counter { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); font-size: 0.75rem; font-style: italic; letter-spacing: 3px; color: var(--dim); }
+.lightbox-caption { position: absolute; top: 2rem; left: 2rem; font-size: 0.7rem; font-style: italic; letter-spacing: 3px; color: var(--faint); text-transform: lowercase; }
+
+/* ─── STYLES / SERVICES ─── */
+.services-grid { margin-top: 2.5rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+.service-card { background: var(--black); padding: 2.5rem 2rem; position: relative; cursor: default; transition: all 0.5s; overflow: hidden; border: 1px solid var(--border); }
+.service-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--cream); transform: scaleX(0); transform-origin: left; transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+.service-card:hover::before { transform: scaleX(1); }
+.service-card:hover { background: var(--deep); }
+.service-num { font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 3px; color: var(--faint); margin-bottom: 1.5rem; display: block; }
+.service-name { font-family: 'Cinzel', serif; font-size: 1.1rem; font-weight: 500; letter-spacing: 2px; color: var(--cream); margin-bottom: 0.8rem; transition: color 0.4s; }
+.service-card:hover .service-name { color: var(--white); }
+.service-desc { font-size: 0.8rem; font-style: italic; font-weight: 200; color: var(--faint); line-height: 1.7; transition: color 0.4s; }
+.service-card:hover .service-desc { color: var(--dim); }
+
+/* ─── PROCESS ─── */
+.process-grid { margin-top: 2.5rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 3rem; }
+.process-step { position: relative; padding-left: 2.5rem; }
+.process-num { position: absolute; left: 0; top: 0; font-family: 'Cinzel', serif; font-size: 0.85rem; font-style: italic; color: var(--faint); }
+.process-step h3 { font-family: 'Cinzel', serif; font-size: 1.15rem; font-weight: 400; color: var(--cream); margin-bottom: 0.6rem; }
+.process-step p { font-size: 0.85rem; font-weight: 200; color: var(--dim); line-height: 1.8; }
+
+/* ─── CONTACT ─── */
+.contact-section { text-align: center; padding: 8rem 3rem; }
+.contact-section .section-title { font-size: clamp(2rem, 5vw, 3.2rem); }
+.ornament { display: flex; justify-content: center; gap: 8px; margin: 2rem 0; opacity: 0.35; }
+.ornament span { width: 6px; height: 6px; border: 1px solid var(--cream); transform: rotate(45deg); }
+.contact-grid { display: flex; justify-content: center; gap: 5rem; margin-top: 3rem; flex-wrap: wrap; }
+.contact-block { text-align: center; }
+.contact-label { font-size: 0.6rem; font-style: italic; letter-spacing: 4px; color: var(--faint); text-transform: lowercase; margin-bottom: 0.6rem; }
+.contact-value { font-family: 'Cinzel', serif; font-size: 1.1rem; font-weight: 300; color: var(--cream); }
+.contact-value a { color: var(--cream); text-decoration: none; transition: color 0.3s; border-bottom: 1px solid var(--ghost); }
+.contact-value a:hover { color: var(--white); border-color: var(--dim); }
+.contact-cta { margin-top: 3.5rem; }
+
+/* contact border frame */
+.contact-frame {
+  position: relative;
+  display: inline-block;
+  padding: 3rem 4rem;
+  max-width: 100%;
+}
+.contact-frame::before,
+.contact-frame::after,
+.contact-frame .cf-br,
+.contact-frame .cf-bl {
+  content: '';
+  position: absolute;
+  width: 20px; height: 20px;
+  border-color: var(--faint);
+  border-style: solid;
+  opacity: 0.5;
+}
+.contact-frame::before  { top: 0; left: 0; border-width: 1px 0 0 1px; }
+.contact-frame::after   { top: 0; right: 0; border-width: 1px 1px 0 0; }
+.contact-frame .cf-br   { bottom: 0; right: 0; border-width: 0 1px 1px 0; }
+.contact-frame .cf-bl   { bottom: 0; left: 0; border-width: 0 0 1px 1px; }
+
+/* ─── FOOTER ─── */
+footer { padding: 3rem; text-align: center; border-top: 1px solid var(--border); }
+footer p { font-size: 0.65rem; font-style: italic; font-weight: 200; letter-spacing: 3px; color: var(--faint); }
+
+/* ─── REVEAL ─── */
+.reveal { opacity: 0; transform: translateY(25px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ─── DESKTOP HERO BRIGHTNESS ─── */
+@media (min-width: 801px) {
+  .hero-bg { filter: brightness(0.42); }
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 800px) {
+  .hero-bg { filter: brightness(0.35); }
+  .side-ruler { display: none; }
+  .hero-corner { display: none; }
+  .section-accent::before { display: none; }
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(8,8,8,0.97); padding: 2rem 1.5rem; gap: 1.5rem; border-bottom: 1px solid var(--border); }
+  section { padding: 5rem 1.5rem; }
+  .about-content { grid-template-columns: 1fr; gap: 3rem; }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  .gallery-filters { gap: 1rem; }
+  .services-grid { grid-template-columns: repeat(2, 1fr); }
+  .process-grid { grid-template-columns: 1fr; }
+  .contact-grid { gap: 2.5rem; }
+  .contact-section { padding: 5rem 1.5rem; }
+  .contact-frame { padding: 2rem 1rem; }
+  .lightbox-close { top: 1rem; right: 1rem; }
+  .lightbox-prev { left: 1rem; }
+  .lightbox-next { right: 1rem; }
+  .lightbox-caption { top: 1rem; left: 1rem; font-size: 0.6rem; }
+}
+@media (max-width: 480px) {
+  .contact-grid { flex-direction: column; gap: 2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- INK CANVAS -->
+<canvas id="inkCanvas"></canvas>
+
+<!-- SIDE RULERS -->
+<div class="side-ruler side-ruler-left">
+  <div class="side-ruler-diamond"></div>
+  <div class="side-ruler-line"></div>
+  <div class="side-ruler-diamond"></div>
+  <div class="side-ruler-line"></div>
+  <div class="side-ruler-diamond"></div>
+</div>
+<div class="side-ruler side-ruler-right">
+  <div class="side-ruler-diamond"></div>
+  <div class="side-ruler-line"></div>
+  <div class="side-ruler-diamond"></div>
+  <div class="side-ruler-line"></div>
+  <div class="side-ruler-diamond"></div>
+</div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#"><img src="logo-nobg.png" alt="Martens Tattoo" class="nav-logo"></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#o-nama">o nama</a></li>
+    <li><a href="#galerija">galerija</a></li>
+    <li><a href="#stilovi">stilovi</a></li>
+    <li><a href="#proces">proces</a></li>
+    <li><a href="#kontakt">kontakt</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <video class="hero-bg" autoplay muted loop playsinline>
+    <source src="Enhancer-Ultra HD-hero.mp4" type="video/mp4">
+  </video>
+  <!-- corner ornaments -->
+  <div class="hero-corner hero-corner-tl">
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="30" x2="60" y2="30" stroke="#555049" stroke-width="0.5"/>
+      <line x1="30" y1="0" x2="30" y2="60" stroke="#555049" stroke-width="0.5"/>
+      <rect x="24" y="24" width="12" height="12" transform="rotate(45 30 30)" stroke="#555049" stroke-width="0.5" fill="none"/>
+      <circle cx="30" cy="30" r="4" stroke="#555049" stroke-width="0.5" fill="none"/>
+      <line x1="0" y1="0" x2="20" y2="0" stroke="#555049" stroke-width="0.5"/>
+      <line x1="0" y1="0" x2="0" y2="20" stroke="#555049" stroke-width="0.5"/>
+    </svg>
+  </div>
+  <div class="hero-corner hero-corner-tr">
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="30" x2="60" y2="30" stroke="#555049" stroke-width="0.5"/>
+      <line x1="30" y1="0" x2="30" y2="60" stroke="#555049" stroke-width="0.5"/>
+      <rect x="24" y="24" width="12" height="12" transform="rotate(45 30 30)" stroke="#555049" stroke-width="0.5" fill="none"/>
+      <circle cx="30" cy="30" r="4" stroke="#555049" stroke-width="0.5" fill="none"/>
+      <line x1="0" y1="0" x2="20" y2="0" stroke="#555049" stroke-width="0.5"/>
+      <line x1="0" y1="0" x2="0" y2="20" stroke="#555049" stroke-width="0.5"/>
+    </svg>
+  </div>
+  <div class="hero-corner hero-corner-bl">
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="30" x2="60" y2="30" stroke="#555049" stroke-width="0.5"/>
+      <line x1="30" y1="0" x2="30" y2="60" stroke="#555049" stroke-width="0.5"/>
+      <rect x="24" y="24" width="12" height="12" transform="rotate(45 30 30)" stroke="#555049" stroke-width="0.5" fill="none"/>
+      <circle cx="30" cy="30" r="4" stroke="#555049" stroke-width="0.5" fill="none"/>
+      <line x1="0" y1="0" x2="20" y2="0" stroke="#555049" stroke-width="0.5"/>
+      <line x1="0" y1="0" x2="0" y2="20" stroke="#555049" stroke-width="0.5"/>
+    </svg>
+  </div>
+  <div class="hero-corner hero-corner-br">
+    <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="30" x2="60" y2="30" stroke="#555049" stroke-width="0.5"/>
+      <line x1="30" y1="0" x2="30" y2="60" stroke="#555049" stroke-width="0.5"/>
+      <rect x="24" y="24" width="12" height="12" transform="rotate(45 30 30)" stroke="#555049" stroke-width="0.5" fill="none"/>
+      <circle cx="30" cy="30" r="4" stroke="#555049" stroke-width="0.5" fill="none"/>
+      <line x1="0" y1="0" x2="20" y2="0" stroke="#555049" stroke-width="0.5"/>
+      <line x1="0" y1="0" x2="0" y2="20" stroke="#555049" stroke-width="0.5"/>
+    </svg>
+  </div>
+  <div class="hero-content">
+    <p class="hero-tagline">svaki rad priča svoju priču</p>
+    <div class="hero-divider"></div>
+    <div class="hero-cta">
+      <a href="#kontakt" class="btn-ghost">zakaži termin</a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <span>scroll</span>
+    <div class="scroll-dot"></div>
+  </div>
+</section>
+
+<!-- O NAMA -->
+<section id="o-nama" class="section-accent">
+  <div class="reveal">
+    <span class="section-label">— o studiju</span>
+    <h2 class="section-title">Umjetnost<br>ispisana na koži</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-content">
+    <div class="about-text reveal">
+      <p>Martens Tattoo je prostor posvećen <em>autentičnom izrazu</em> i preciznoj izvedbi. Svaka tetovaža nastaje u dijalogu s klijentom — od prve skice do posljednje linije.</p>
+      <p>Studio koristi isključivo <em>premium opremu i pigmente</em>, u potpuno sterilnom okruženju. Tvoje zdravlje i povjerenje su temelj svega što radimo.</p>
+    </div>
+    <div class="about-details-frame reveal">
+      <div class="about-details">
+        <div class="detail-item">
+          <p class="detail-label">— godina iskustva</p>
+          <p class="detail-value">3+</p>
+        </div>
+        <div class="detail-item">
+          <p class="detail-label">— dovršenih radova</p>
+          <p class="detail-value">50+</p>
+        </div>
+        <div class="detail-item">
+          <p class="detail-label">— pristup</p>
+          <p class="detail-value">Isključivo po narudžbi</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ORNAMENTAL DIVIDER 1 -->
+<div class="ornamental-divider">
+  <div class="od-line"></div>
+  <div class="od-center">
+    <div class="od-dot"></div>
+    <div class="od-diamond"></div>
+    <div class="od-cross"></div>
+    <div class="od-diamond"></div>
+    <div class="od-dot"></div>
+    <div class="od-diamond"></div>
+    <div class="od-cross"></div>
+    <div class="od-diamond"></div>
+    <div class="od-dot"></div>
+  </div>
+  <div class="od-line"></div>
+</div>
+
+<!-- GALERIJA -->
+<section id="galerija">
+  <div class="reveal">
+    <span class="section-label">— portfolio</span>
+    <h2 class="section-title">Odabrani radovi</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="gallery-filters reveal">
+    <button class="gallery-filter active" data-filter="all">sve</button>
+    <button class="gallery-filter" data-filter="fineline">fine line</button>
+    <button class="gallery-filter" data-filter="blackwork">blackwork</button>
+    <button class="gallery-filter" data-filter="illustrative">illustrative</button>
+    <button class="gallery-filter" data-filter="lettering">lettering</button>
+    <button class="gallery-filter" data-filter="dotting">dotting</button>
+    <button class="gallery-filter" data-filter="floral">floral</button>
+    <button class="gallery-filter" data-filter="ornamental">ornamental</button>
+    <button class="gallery-filter" data-filter="realism">realism</button>
+  </div>
+  <div class="gallery-grid reveal" id="galleryGrid">
+    <div class="gallery-item" data-style="fineline" data-caption="Fine Line"><img src="Fine line 10.jpeg" alt="Fine line 10" loading="lazy"></div>
+    <div class="gallery-item" data-style="fineline floral dotting" data-caption="Fine Line · Floral · Dotting"><img src="Fine line, floral, dotting.jpeg" alt="Fine line, floral, dotting" loading="lazy"></div>
+    <div class="gallery-item" data-style="fineline illustrative" data-caption="Fine Line · Illustrative"><img src="Fine line, illustrative6.jpeg" alt="Fine line, illustrative" loading="lazy"></div>
+    <div class="gallery-item" data-style="fineline" data-caption="Fine Line"><img src="Fine line7.jpeg" alt="Fine line 7" loading="lazy"></div>
+    <div class="gallery-item" data-style="fineline" data-caption="Fine Line"><img src="Fine line8.jpeg" alt="Fine line 8" loading="lazy"></div>
+    <div class="gallery-item" data-style="fineline" data-caption="Fine Line"><img src="Fine line9.jpeg" alt="Fine line 9" loading="lazy"></div>
+    <div class="gallery-item" data-style="fineline dotting" data-caption="Fine Line · Dotting"><img src="fine_line-dotting.jpeg" alt="Fine line dotting" loading="lazy"></div>
+    <div class="gallery-item" data-style="fineline" data-caption="Fine Line"><img src="fine_line.jpeg" alt="Fine line" loading="lazy"></div>
+    <div class="gallery-item" data-style="fineline" data-caption="Fine Line"><img src="fine_line1.jpeg" alt="Fine line 1" loading="lazy"></div>
+    <div class="gallery-item" data-style="fineline" data-caption="Fine Line"><img src="fine_line3.jpeg" alt="Fine line 3" loading="lazy"></div>
+    <div class="gallery-item" data-style="fineline" data-caption="Fine Line"><img src="fine_line4.jpeg" alt="Fine line 4" loading="lazy"></div>
+    <div class="gallery-item" data-style="floral ornamental" data-caption="Floral · Ornamental"><img src="floral-ornamental.jpeg" alt="Floral ornamental" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="floral fineline lettering" data-caption="Floral · Fine Line · Lettering"><img src="Floral, fine line, lettering.jpeg" alt="Floral, fine line, lettering" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="floral lettering dotting fineline" data-caption="Floral · Lettering · Dotting · Fine Line"><img src="Floral, lettering, dotting, fine line.jpeg" alt="Floral, lettering, dotting, fine line" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="illustrative blackwork" data-caption="Illustrative · Blackwork"><img src="Illustrative, blackwork3.jpeg" alt="Illustrative, blackwork 3" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="illustrative blackwork" data-caption="Illustrative · Blackwork"><img src="Illustrative, blackwork5.jpeg" alt="Illustrative, blackwork 5" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="illustrative blackwork" data-caption="Illustrative · Blackwork"><img src="Illustrative, blackwork7.jpeg" alt="Illustrative, blackwork 7" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="illustrative dotting blackwork" data-caption="Illustrative · Dotting · Blackwork"><img src="Illustrative, dotting, blackwork.jpeg" alt="Illustrative, dotting, blackwork" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="illustrative fineline blackwork" data-caption="Illustrative · Fine Line · Blackwork"><img src="Illustrative, fine line, blackwork2.jpeg" alt="Illustrative, fine line, blackwork 2" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="illustrative fineline blackwork" data-caption="Illustrative · Fine Line · Blackwork"><img src="Illustrative, fine line, blackwork3.jpeg" alt="Illustrative, fine line, blackwork 3" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="illustrative fineline dotting" data-caption="Illustrative · Fine Line · Dotting"><img src="Illustrative, fine line, dotting.jpeg" alt="Illustrative, fine line, dotting" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="illustrative fineline" data-caption="Illustrative · Fine Line"><img src="Illustrative, fine line.jpeg" alt="Illustrative, fine line" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="illustrative fineline" data-caption="Illustrative · Fine Line"><img src="Illustrative, fine line2.jpeg" alt="Illustrative, fine line 2" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="illustrative" data-caption="Illustrative"><img src="illustrative1.jpeg" alt="Illustrative 1" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="lettering fineline" data-caption="Lettering · Fine Line"><img src="lettering-fine_line.jpeg" alt="Lettering fine line" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="lettering blackwork" data-caption="Lettering · Blackwork"><img src="Lettering, blackwork5.jpeg" alt="Lettering, blackwork 5" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="lettering blackwork" data-caption="Lettering · Blackwork"><img src="Lettering, blackwork8.jpeg" alt="Lettering, blackwork 8" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="lettering fineline dotting" data-caption="Lettering · Fine Line · Dotting"><img src="Lettering, fine line, dotting3.jpeg" alt="Lettering, fine line, dotting 3" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="lettering fineline" data-caption="Lettering · Fine Line"><img src="Lettering, fine line.jpeg" alt="Lettering, fine line" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="lettering fineline" data-caption="Lettering · Fine Line"><img src="Lettering, fine line1.jpeg" alt="Lettering, fine line 1" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="lettering ornamental" data-caption="Lettering · Ornamental"><img src="Lettering, ornamental3.jpeg" alt="Lettering, ornamental 3" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="lettering" data-caption="Lettering"><img src="lettering2.jpeg" alt="Lettering 2" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="lettering" data-caption="Lettering"><img src="lettering3.jpeg" alt="Lettering 3" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="realism blackwork" data-caption="Black & Grey Realism"><img src="Black and grey realisam.jpeg" alt="Black and grey realism" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="blackwork" data-caption="Blackwork"><img src="blackwork10.jpeg" alt="Blackwork 10" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="fineline blackwork" data-caption="Fine Line · Blackwork"><img src="Fine line, blackwork10.jpeg" alt="Fine line, blackwork 10" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="fineline" data-caption="Fine Line"><img src="fineline.jpeg" alt="Fine line" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="fineline" data-caption="Fine Line"><img src="fineline12.jpeg" alt="Fine line 12" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="fineline" data-caption="Fine Line"><img src="fineline13.jpeg" alt="Fine line 13" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="fineline" data-caption="Fine Line"><img src="fineline14.jpeg" alt="Fine line 14" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="lettering blackwork floral" data-caption="Lettering · Blackwork · Floral"><img src="Lettering, blackwork, floral3.jpeg" alt="Lettering, blackwork, floral 3" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="lettering blackwork" data-caption="Lettering · Blackwork"><img src="Lettering, blackwork7.jpeg" alt="Lettering, blackwork 7" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="lettering fineline" data-caption="Lettering · Fine Line"><img src="Lettering, fine line10.jpeg" alt="Lettering, fine line 10" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="lettering fineline" data-caption="Lettering · Fine Line"><img src="Lettering, fine line11.jpeg" alt="Lettering, fine line 11" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="lettering" data-caption="Lettering"><img src="lettering9.jpeg" alt="Lettering 9" loading="lazy"></div>
+    <div class="gallery-item hidden-extra hidden" data-style="lettering" data-caption="Lettering"><img src="lettering11.jpeg" alt="Lettering 11" loading="lazy"></div>
+  </div>
+  <div class="gallery-view-more reveal">
+    <button class="view-more-btn" id="viewMoreBtn">prikaži sve radove</button>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+  <button class="lightbox-close" id="lightboxClose">✕</button>
+  <button class="lightbox-prev" id="lightboxPrev">‹</button>
+  <div class="lightbox-inner">
+    <img class="lightbox-img" id="lightboxImg" src="" alt="">
+  </div>
+  <button class="lightbox-next" id="lightboxNext">›</button>
+  <div class="lightbox-counter" id="lightboxCounter"></div>
+</div>
+
+<!-- ORNAMENTAL DIVIDER 2 -->
+<div class="ornamental-divider">
+  <div class="od-line"></div>
+  <div class="od-center">
+    <div class="od-dot"></div>
+    <div class="od-diamond"></div>
+    <div class="od-cross"></div>
+    <div class="od-diamond"></div>
+    <div class="od-dot"></div>
+    <div class="od-diamond"></div>
+    <div class="od-cross"></div>
+    <div class="od-diamond"></div>
+    <div class="od-dot"></div>
+  </div>
+  <div class="od-line"></div>
+</div>
+
+<!-- STILOVI -->
+<section id="stilovi" class="section-accent">
+  <div class="reveal">
+    <span class="section-label">— specijalnosti</span>
+    <h2 class="section-title">Stilovi</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="services-grid reveal">
+    <div class="service-card"><span class="service-num">01</span><h3 class="service-name">Blackwork</h3><p class="service-desc">Geometrija, tribal, ornamentalni dizajni s dubokim kontrastom i snažnim crnim površinama.</p></div>
+    <div class="service-card"><span class="service-num">02</span><h3 class="service-name">Realism</h3><p class="service-desc">Fotorealistični portreti, priroda i životinje s preciznim sjenčanjem i detaljima.</p></div>
+    <div class="service-card"><span class="service-num">03</span><h3 class="service-name">Neo-Traditional</h3><p class="service-desc">Boldni obrisi, bogate boje i moderne interpretacije klasičnih motiva.</p></div>
+    <div class="service-card"><span class="service-num">04</span><h3 class="service-name">Dotwork</h3><p class="service-desc">Mandala, sacred geometry i ornamentalni radovi izrađeni preciznim točkicama.</p></div>
+    <div class="service-card"><span class="service-num">05</span><h3 class="service-name">Fine Line</h3><p class="service-desc">Delikatne linije, minimalistički dizajni i elegantni motivi za suptilni izraz.</p></div>
+    <div class="service-card"><span class="service-num">06</span><h3 class="service-name">Custom</h3><p class="service-desc">Potpuno prilagođeni dizajni. Donesite ideju, zajedno je pretvaramo u remek-djelo.</p></div>
+  </div>
+</section>
+
+<!-- ORNAMENTAL DIVIDER 3 -->
+<div class="ornamental-divider">
+  <div class="od-line"></div>
+  <div class="od-center">
+    <div class="od-dot"></div>
+    <div class="od-diamond"></div>
+    <div class="od-cross"></div>
+    <div class="od-diamond"></div>
+    <div class="od-dot"></div>
+    <div class="od-diamond"></div>
+    <div class="od-cross"></div>
+    <div class="od-diamond"></div>
+    <div class="od-dot"></div>
+  </div>
+  <div class="od-line"></div>
+</div>
+
+<!-- PROCES -->
+<section id="proces">
+  <div class="reveal">
+    <span class="section-label">— kako radimo</span>
+    <h2 class="section-title">Od ideje<br>do tetovaže</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="process-grid">
+    <div class="process-step reveal"><span class="process-num">i.</span><h3>Konzultacija</h3><p>Razgovaramo o tvojoj ideji, stilu, veličini i poziciji. Besplatno, bez obaveze.</p></div>
+    <div class="process-step reveal"><span class="process-num">ii.</span><h3>Dizajn</h3><p>Kreiramo unikatan dizajn prilagođen tebi. Revizije do potpunog zadovoljstva.</p></div>
+    <div class="process-step reveal"><span class="process-num">iii.</span><h3>Tetoviranje</h3><p>Profesionalna izvedba u sterilnom okruženju s premium materijalima.</p></div>
+    <div class="process-step reveal"><span class="process-num">iv.</span><h3>Aftercare</h3><p>Detaljne upute za njegu i besplatna kontrola nakon zacjeljivanja.</p></div>
+  </div>
+</section>
+
+<!-- ORNAMENTAL DIVIDER 4 -->
+<div class="ornamental-divider">
+  <div class="od-line"></div>
+  <div class="od-center">
+    <div class="od-dot"></div>
+    <div class="od-diamond"></div>
+    <div class="od-cross"></div>
+    <div class="od-diamond"></div>
+    <div class="od-dot"></div>
+    <div class="od-diamond"></div>
+    <div class="od-cross"></div>
+    <div class="od-diamond"></div>
+    <div class="od-dot"></div>
+  </div>
+  <div class="od-line"></div>
+</div>
+
+<!-- KONTAKT -->
+<section class="contact-section" id="kontakt">
+  <div class="reveal">
+    <span class="section-label">— kontakt</span>
+    <h2 class="section-title">Zakaži termin</h2>
+    <div class="ornament"><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+  <div class="contact-frame reveal">
+    <span class="cf-br"></span><span class="cf-bl"></span>
+    <div class="contact-grid">
+      <div class="contact-block"><p class="contact-label">— telefon</p><p class="contact-value"><a href="tel:+385919236475">+385 91 923 6475</a></p></div>
+      <div class="contact-block"><p class="contact-label">— email</p><p class="contact-value"><a href="mailto:martenstattoo.getinked@gmail.com">martenstattoo.getinked@gmail.com</a></p></div>
+      <div class="contact-block"><p class="contact-label">— instagram</p><p class="contact-value"><a href="https://www.instagram.com/martenstattoo" target="_blank" rel="noopener">@martenstattoo</a></p></div>
+      <div class="contact-block"><p class="contact-label">— tiktok</p><p class="contact-value"><a href="https://www.tiktok.com/@martenstattoo" target="_blank" rel="noopener">@martenstattoo</a></p></div>
+      <div class="contact-block"><p class="contact-label">— radno vrijeme</p><p class="contact-value">po dogovoru</p></div>
+    </div>
+  </div>
+  <div class="contact-cta reveal">
+    <a href="mailto:martenstattoo.getinked@gmail.com" class="btn-ghost">pošalji upit</a>
+  </div>
+</section>
+
+<div style="display:flex; justify-content:center; padding: 1.5rem 3rem 2rem; background:#000;">
+  <img src="logo-circle.jpeg" alt="Martens Tattoo" style="width:220px; height:220px; object-fit:contain; opacity:0.85;">
+</div>
+
+<footer>
+  <p>&copy; 2026 Martens Tattoo · get inked</p>
+</footer>
+
+<script>
+/* ─── NAV ─── */
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+/* ─── REVEAL ─── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ─── GALLERY ─── */
+const filterBtns = document.querySelectorAll('.gallery-filter');
+const galleryItems = document.querySelectorAll('.gallery-item');
+const viewMoreBtn = document.getElementById('viewMoreBtn');
+let showingAll = false, activeFilter = 'all';
+
+function applyFilter() {
+  galleryItems.forEach(item => {
+    const styles = item.dataset.style.split(' ');
+    const match = activeFilter === 'all' || styles.includes(activeFilter);
+    const isExtra = item.classList.contains('hidden-extra');
+    if (!match) { item.classList.add('hidden'); return; }
+    (activeFilter !== 'all' || showingAll || !isExtra) ? item.classList.remove('hidden') : item.classList.add('hidden');
+  });
+  viewMoreBtn.style.display = (activeFilter !== 'all' || showingAll) ? 'none' : 'inline-block';
+}
+
+filterBtns.forEach(btn => btn.addEventListener('click', () => {
+  filterBtns.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeFilter = btn.dataset.filter;
+  applyFilter();
+}));
+viewMoreBtn.addEventListener('click', () => { showingAll = true; applyFilter(); });
+
+/* ─── LIGHTBOX ─── */
+const lb = document.getElementById('lightbox');
+const lbImg = document.getElementById('lightboxImg');
+const lbCap = document.getElementById('lightboxCaption');
+const lbCount = document.getElementById('lightboxCounter');
+let lbIdx = 0, lbVisible = [];
+
+function lbOpen(i) {
+  lbVisible = [...galleryItems].filter(x => !x.classList.contains('hidden'));
+  lbIdx = i; lbUpdate();
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function lbClose() { lb.classList.remove('open'); document.body.style.overflow = ''; }
+function lbUpdate() {
+  const item = lbVisible[lbIdx], img = item.querySelector('img');
+  lbImg.src = img.src; lbImg.alt = img.alt;
+  lbCap.textContent = item.dataset.caption || '';
+  lbCount.textContent = `${String(lbIdx + 1).padStart(2, '0')} — ${String(lbVisible.length).padStart(2, '0')}`;
+}
+function lbNext() { lbIdx = (lbIdx + 1) % lbVisible.length; lbUpdate(); }
+function lbPrev() { lbIdx = (lbIdx - 1 + lbVisible.length) % lbVisible.length; lbUpdate(); }
+
+galleryItems.forEach(item => item.addEventListener('click', () => {
+  const vis = [...galleryItems].filter(x => !x.classList.contains('hidden'));
+  const i = vis.indexOf(item);
+  if (i >= 0) lbOpen(i);
+}));
+document.getElementById('lightboxClose').addEventListener('click', lbClose);
+document.getElementById('lightboxPrev').addEventListener('click', lbPrev);
+document.getElementById('lightboxNext').addEventListener('click', lbNext);
+lb.addEventListener('click', (e) => { if (e.target === lb) lbClose(); });
+document.addEventListener('keydown', (e) => {
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'Escape') lbClose();
+  if (e.key === 'ArrowRight') lbNext();
+  if (e.key === 'ArrowLeft') lbPrev();
+});
+
+/* ─── INK SPLASH ─── */
+const canvas = document.getElementById('inkCanvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+const drops = [];
+
+function randomBetween(a, b) { return a + Math.random() * (b - a); }
+
+class InkDrop {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.age = 0;
+    this.duration = randomBetween(900, 1400);
+    this.blobs = [];
+    this.tendrils = [];
+
+    // main blob + satellites
+    const count = Math.floor(randomBetween(6, 11));
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const dist = i === 0 ? 0 : randomBetween(8, 40);
+      const r = i === 0 ? randomBetween(18, 28) : randomBetween(4, 16);
+      this.blobs.push({ dx: Math.cos(angle) * dist, dy: Math.sin(angle) * dist, r, wobble: Math.random() * 2 });
+    }
+
+    // tendrils — thin ink lines extending outward
+    const tendrilCount = Math.floor(randomBetween(4, 9));
+    for (let i = 0; i < tendrilCount; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const len = randomBetween(30, 90);
+      const ctrl1Angle = angle + randomBetween(-0.6, 0.6);
+      const ctrl2Angle = angle + randomBetween(-0.6, 0.6);
+      this.tendrils.push({
+        angle,
+        len,
+        cx1: Math.cos(ctrl1Angle) * len * 0.35,
+        cy1: Math.sin(ctrl1Angle) * len * 0.35,
+        cx2: Math.cos(ctrl2Angle) * len * 0.7,
+        cy2: Math.sin(ctrl2Angle) * len * 0.7,
+        width: randomBetween(0.4, 1.2)
+      });
+    }
+  }
+
+  draw(ctx) {
+    const t = Math.min(this.age / this.duration, 1);
+    // easing: fast spread, then fade
+    const spread = t < 0.35 ? t / 0.35 : 1;
+    const alpha = t < 0.5 ? 1 : 1 - ((t - 0.5) / 0.5);
+    const baseAlpha = alpha * 0.82;
+
+    ctx.save();
+    ctx.translate(this.x, this.y);
+
+    // draw tendrils
+    this.tendrils.forEach(td => {
+      const endX = Math.cos(td.angle) * td.len * spread;
+      const endY = Math.sin(td.angle) * td.len * spread;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.bezierCurveTo(
+        td.cx1 * spread, td.cy1 * spread,
+        td.cx2 * spread, td.cy2 * spread,
+        endX, endY
+      );
+      ctx.strokeStyle = `rgba(12, 8, 20, ${baseAlpha * 0.65})`;
+      ctx.lineWidth = td.width * (1 - t * 0.3);
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    });
+
+    // draw blobs
+    this.blobs.forEach((blob, idx) => {
+      const bx = blob.dx * spread;
+      const by = blob.dy * spread;
+      const r = blob.r * spread;
+      if (r < 0.5) return;
+
+      const grad = ctx.createRadialGradient(bx, by, 0, bx, by, r);
+      grad.addColorStop(0, `rgba(8, 4, 18, ${baseAlpha})`);
+      grad.addColorStop(0.6, `rgba(12, 8, 25, ${baseAlpha * 0.85})`);
+      grad.addColorStop(1, `rgba(20, 14, 35, 0)`);
+
+      ctx.beginPath();
+      // slightly organic shape
+      const w = blob.wobble * spread;
+      ctx.ellipse(bx, by, r + w, r - w * 0.5, blob.wobble, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+    });
+
+    ctx.restore();
+  }
+
+  update(dt) { this.age += dt; }
+  isDead() { return this.age >= this.duration; }
+}
+
+let lastTime = null;
+
+function loop(ts) {
+  if (lastTime === null) lastTime = ts;
+  const dt = ts - lastTime;
+  lastTime = ts;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  for (let i = drops.length - 1; i >= 0; i--) {
+    drops[i].update(dt);
+    if (drops[i].isDead()) { drops.splice(i, 1); continue; }
+    drops[i].draw(ctx);
+  }
+
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+function spawnInk(x, y) {
+  // don't spawn on lightbox
+  if (lb.classList.contains('open')) return;
+  drops.push(new InkDrop(x, y));
+}
+
+document.addEventListener('click', (e) => spawnInk(e.clientX, e.clientY));
+document.addEventListener('touchstart', (e) => {
+  const t = e.touches[0];
+  spawnInk(t.clientX, t.clientY);
+}, { passive: true });
+</script>
+</body>
+</html>
