@@ -99,7 +99,7 @@ nav.scrolled { padding: 0.8rem 3rem; background: rgba(8,8,8,0.92); }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(0.3);
+  filter: brightness(0.22);
   z-index: 0;
 }
 
@@ -665,6 +665,10 @@ footer p {
   color: var(--faint);
 }
 
+@media (min-width: 801px) {
+  .hero-bg { filter: brightness(0.42); }
+}
+
 /* ─── REVEAL ─── */
 .reveal {
   opacity: 0;
@@ -733,7 +737,7 @@ footer p {
     <source src="hero.mp4" type="video/mp4">
   </video>
   <div class="hero-content">
-    <p class="hero-tagline">svaki rad priča tvoju priču</p>
+    <p class="hero-tagline">svaki rad priča svoju priču</p>
     <div class="hero-divider"></div>
     <div class="hero-cta">
       <a href="#kontakt" class="btn-ghost">zakaži termin</a>
@@ -760,11 +764,11 @@ footer p {
     <div class="about-details reveal">
       <div class="detail-item">
         <p class="detail-label">— godina iskustva</p>
-        <p class="detail-value">10+</p>
+        <p class="detail-value">3+</p>
       </div>
       <div class="detail-item">
         <p class="detail-label">— dovršenih radova</p>
-        <p class="detail-value">2000+</p>
+        <p class="detail-value">50+</p>
       </div>
       <div class="detail-item">
         <p class="detail-label">— pristup</p>
@@ -929,15 +933,20 @@ footer p {
     <div class="ornament"><span></span><span></span><span></span><span></span><span></span></div>
   </div>
   <div class="contact-grid reveal">
-    <div class="contact-block"><p class="contact-label">— telefon</p><p class="contact-value"><a href="tel:+385991234567">+385 99 123 4567</a></p></div>
-    <div class="contact-block"><p class="contact-label">— email</p><p class="contact-value"><a href="mailto:info@martenstattoo.com">info@martenstattoo.com</a></p></div>
-    <div class="contact-block"><p class="contact-label">— instagram</p><p class="contact-value"><a href="#">@martenstattoo</a></p></div>
-    <div class="contact-block"><p class="contact-label">— radno vrijeme</p><p class="contact-value">Pon — Sub · 10 – 20h</p></div>
+    <div class="contact-block"><p class="contact-label">— telefon</p><p class="contact-value"><a href="tel:+385919236475">+385 91 923 6475</a></p></div>
+    <div class="contact-block"><p class="contact-label">— email</p><p class="contact-value"><a href="mailto:martenstattoo.getinked@gmail.com">martenstattoo.getinked@gmail.com</a></p></div>
+    <div class="contact-block"><p class="contact-label">— instagram</p><p class="contact-value"><a href="https://www.instagram.com/martenstattoo" target="_blank" rel="noopener">@martenstattoo</a></p></div>
+    <div class="contact-block"><p class="contact-label">— tiktok</p><p class="contact-value"><a href="https://www.tiktok.com/@martenstattoo" target="_blank" rel="noopener">@martenstattoo</a></p></div>
+    <div class="contact-block"><p class="contact-label">— radno vrijeme</p><p class="contact-value">po dogovoru</p></div>
   </div>
   <div class="contact-cta reveal">
-    <a href="mailto:info@martenstattoo.com" class="btn-ghost">pošalji upit</a>
+    <a href="mailto:martenstattoo.getinked@gmail.com" class="btn-ghost">pošalji upit</a>
   </div>
 </section>
+
+<div style="display:flex; justify-content:center; padding: 4rem 3rem 2rem; background:#000;">
+  <img src="logo-circle.jpeg" alt="Martens Tattoo" style="width:220px; height:220px; object-fit:contain; opacity:0.85;">
+</div>
 
 <footer>
   <p>&copy; 2026 Martens Tattoo · get inked</p>
