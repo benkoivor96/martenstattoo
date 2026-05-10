@@ -25,14 +25,20 @@ body { background: #000 !important; color: var(--white); font-family: 'Spectral'
 ::-webkit-scrollbar-track { background: var(--black); }
 ::-webkit-scrollbar-thumb { background: var(--faint); }
 
-/* ─── INK CANVAS ─── */
-#inkCanvas {
+/* ─── INK SPLASH ─── */
+.ink-splash {
   position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
   pointer-events: none;
   z-index: 99999;
+  transform-origin: center;
+  animation: inkSplat 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes inkSplat {
+  0%   { opacity: 1; transform: translate(-50%, -50%) rotate(var(--rot)) scale(0); }
+  32%  { opacity: 1; transform: translate(-50%, -50%) rotate(var(--rot)) scale(1); }
+  62%  { opacity: 1; transform: translate(-50%, -50%) rotate(var(--rot)) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--rot)) scale(1); }
 }
 
 /* ─── SIDE RULERS ─── */
@@ -452,8 +458,6 @@ footer p { font-size: 0.65rem; font-style: italic; font-weight: 200; letter-spac
 </head>
 <body>
 
-<!-- INK CANVAS -->
-<canvas id="inkCanvas"></canvas>
 
 <!-- SIDE RULERS -->
 <div class="side-ruler side-ruler-left">
@@ -871,163 +875,24 @@ document.addEventListener('keydown', (e) => {
 });
 
 /* ─── INK SPLASH ─── */
-const canvas = document.getElementById('inkCanvas');
-const ctx = canvas.getContext('2d');
-
-function resizeCanvas() {
-  canvas.width = canvas.offsetWidth;
-  canvas.height = canvas.offsetHeight;
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-
-const drops = [];
-
-function randomBetween(a, b) { return a + Math.random() * (b - a); }
-
-class InkDrop {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.age = 0;
-    this.duration = randomBetween(1100, 1600);
-    this.baseRadius = randomBetween(20, 30);
-
-    // organic main blob
-    const numPts = 14;
-    this.mainPts = [];
-    for (let i = 0; i < numPts; i++) {
-      this.mainPts.push({
-        angle: (i / numPts) * Math.PI * 2,
-        r: randomBetween(0.62, 1.38)
-      });
-    }
-
-    // spikes — thick at base, taper to tip
-    this.spikes = [];
-    const spikeCount = Math.floor(randomBetween(8, 14));
-    for (let i = 0; i < spikeCount; i++) {
-      this.spikes.push({
-        angle:  Math.random() * Math.PI * 2,
-        length: randomBetween(this.baseRadius * 0.7, this.baseRadius * 2.6),
-        width:  randomBetween(5, 14),
-        offset: randomBetween(this.baseRadius * 0.45, this.baseRadius * 0.85)
-      });
-    }
-
-    // small dots nearby
-    this.dots = [];
-    const dotCount = Math.floor(randomBetween(3, 7));
-    for (let i = 0; i < dotCount; i++) {
-      const a = Math.random() * Math.PI * 2;
-      const dist = randomBetween(this.baseRadius * 1.1, this.baseRadius * 2.2);
-      this.dots.push({
-        dx: Math.cos(a) * dist,
-        dy: Math.sin(a) * dist,
-        r: randomBetween(2, 6)
-      });
-    }
-  }
-
-  _organicBlob(ctx, cx, cy, radius, pts) {
-    const n = pts.length;
-    const coords = pts.map(p => ({
-      x: cx + Math.cos(p.angle) * radius * p.r,
-      y: cy + Math.sin(p.angle) * radius * p.r
-    }));
-    ctx.beginPath();
-    for (let i = 0; i < n; i++) {
-      const p0 = coords[(i - 1 + n) % n];
-      const p1 = coords[i];
-      const p2 = coords[(i + 1) % n];
-      const p3 = coords[(i + 2) % n];
-      if (i === 0) ctx.moveTo(p1.x, p1.y);
-      ctx.bezierCurveTo(
-        p1.x + (p2.x - p0.x) / 5, p1.y + (p2.y - p0.y) / 5,
-        p2.x - (p3.x - p1.x) / 5, p2.y - (p3.y - p1.y) / 5,
-        p2.x, p2.y
-      );
-    }
-    ctx.closePath();
-  }
-
-  // teardrop spike — wide at offset, tapers to point at offset+length
-  _spike(ctx, angle, length, width, offset) {
-    ctx.save();
-    ctx.rotate(angle);
-    const o = offset, l = length, w = width;
-    ctx.beginPath();
-    ctx.moveTo(o, -w / 2);
-    ctx.bezierCurveTo(o + l * 0.35, -w / 2,  o + l * 0.82, -w * 0.08, o + l, 0);
-    ctx.bezierCurveTo(o + l * 0.82,  w * 0.08, o + l * 0.35,  w / 2,  o,  w / 2);
-    ctx.closePath();
-    ctx.restore();
-  }
-
-  draw(ctx) {
-    const t = Math.min(this.age / this.duration, 1);
-    const spread = t < 0.26 ? t / 0.26 : 1;
-    const alpha  = t < 0.6  ? 1 : 1 - ((t - 0.6) / 0.4);
-
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-
-    // spikes behind blob
-    this.spikes.forEach(sp => {
-      this._spike(ctx, sp.angle, sp.length * spread, sp.width * spread, sp.offset * spread);
-      ctx.fill();
-    });
-
-    // main blob
-    this._organicBlob(ctx, 0, 0, this.baseRadius * spread, this.mainPts);
-    ctx.fill();
-
-    // dots
-    this.dots.forEach(d => {
-      ctx.beginPath();
-      ctx.arc(d.dx * spread, d.dy * spread, Math.max(d.r * spread, 0.5), 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    ctx.restore();
-  }
-
-  update(dt) { this.age += dt; }
-  isDead() { return this.age >= this.duration; }
-}
-
-let lastTime = null;
-
-function loop(ts) {
-  if (lastTime === null) lastTime = ts;
-  const dt = ts - lastTime;
-  lastTime = ts;
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  for (let i = drops.length - 1; i >= 0; i--) {
-    drops[i].update(dt);
-    if (drops[i].isDead()) { drops.splice(i, 1); continue; }
-    drops[i].draw(ctx);
-  }
-
-  requestAnimationFrame(loop);
-}
-requestAnimationFrame(loop);
-
 function spawnInk(clientX, clientY) {
   if (lb.classList.contains('open')) return;
-  const rect = canvas.getBoundingClientRect();
-  const x = (clientX - rect.left) * (canvas.width / rect.width);
-  const y = (clientY - rect.top) * (canvas.height / rect.height);
-  drops.push(new InkDrop(x, y));
+  const img = document.createElement('img');
+  img.src = 'ink-splash-nobg.png';
+  img.className = 'ink-splash';
+  const size = 180 + Math.random() * 80;
+  img.style.width  = size + 'px';
+  img.style.height = size + 'px';
+  img.style.left   = clientX + 'px';
+  img.style.top    = clientY + 'px';
+  img.style.setProperty('--rot', (Math.random() * 360) + 'deg');
+  document.body.appendChild(img);
+  img.addEventListener('animationend', () => img.remove());
 }
 
 document.addEventListener('click', (e) => spawnInk(e.clientX, e.clientY));
 document.addEventListener('touchstart', (e) => {
-  const t = e.touches[0];
-  spawnInk(t.clientX, t.clientY);
+  spawnInk(e.touches[0].clientX, e.touches[0].clientY);
 }, { passive: true });
 </script>
 </body>
