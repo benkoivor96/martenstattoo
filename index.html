@@ -893,9 +893,16 @@ function spawnInk(clientX, clientY) {
   img.addEventListener('animationend', () => img.remove());
 }
 
-// pointerdown radi i na touchu i na mišu, bez duplikata
+// spawn samo ako nije scroll (pomak < 8px)
+let _startX, _startY;
 document.addEventListener('pointerdown', (e) => {
-  spawnInk(e.clientX, e.clientY);
+  _startX = e.clientX;
+  _startY = e.clientY;
+});
+document.addEventListener('pointerup', (e) => {
+  const dx = e.clientX - _startX;
+  const dy = e.clientY - _startY;
+  if (Math.sqrt(dx * dx + dy * dy) < 8) spawnInk(e.clientX, e.clientY);
 });
 </script>
 </body>
