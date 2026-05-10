@@ -941,7 +941,7 @@ class InkDrop {
         td.cx2 * spread, td.cy2 * spread,
         endX, endY
       );
-      ctx.strokeStyle = `rgba(12, 8, 20, ${baseAlpha * 0.65})`;
+      ctx.strokeStyle = `rgba(228, 224, 216, ${baseAlpha * 0.75})`;
       ctx.lineWidth = td.width * (1 - t * 0.3);
       ctx.lineCap = 'round';
       ctx.stroke();
@@ -955,9 +955,9 @@ class InkDrop {
       if (r < 0.5) return;
 
       const grad = ctx.createRadialGradient(bx, by, 0, bx, by, r);
-      grad.addColorStop(0, `rgba(8, 4, 18, ${baseAlpha})`);
-      grad.addColorStop(0.6, `rgba(12, 8, 25, ${baseAlpha * 0.85})`);
-      grad.addColorStop(1, `rgba(20, 14, 35, 0)`);
+      grad.addColorStop(0, `rgba(240, 236, 228, ${baseAlpha})`);
+      grad.addColorStop(0.6, `rgba(228, 224, 216, ${baseAlpha * 0.85})`);
+      grad.addColorStop(1, `rgba(212, 207, 196, 0)`);
 
       ctx.beginPath();
       // slightly organic shape
