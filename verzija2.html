@@ -880,7 +880,10 @@ function spawnInk(clientX, clientY) {
   const img = document.createElement('img');
   img.src = 'ink-splash-nobg.png';
   img.className = 'ink-splash';
-  const size = 180 + Math.random() * 80;
+  const isMobile = window.innerWidth <= 800;
+  const size = isMobile
+    ? 110 + Math.random() * 50
+    : 120 + Math.random() * 60;
   img.style.width  = size + 'px';
   img.style.height = size + 'px';
   img.style.left   = clientX + 'px';
@@ -890,10 +893,10 @@ function spawnInk(clientX, clientY) {
   img.addEventListener('animationend', () => img.remove());
 }
 
-document.addEventListener('click', (e) => spawnInk(e.clientX, e.clientY));
-document.addEventListener('touchstart', (e) => {
-  spawnInk(e.touches[0].clientX, e.touches[0].clientY);
-}, { passive: true });
+// pointerdown radi i na touchu i na mišu, bez duplikata
+document.addEventListener('pointerdown', (e) => {
+  spawnInk(e.clientX, e.clientY);
+});
 </script>
 </body>
 </html>
