@@ -890,74 +890,30 @@ class InkDrop {
     this.age = 0;
     this.duration = randomBetween(1200, 1800);
     this.blobs = [];
-    this.tendrils = [];
-    this.splats = [];
 
     // main blob
-    this.blobs.push({ dx: 0, dy: 0, rx: randomBetween(22, 34), ry: randomBetween(18, 30), angle: Math.random() * Math.PI });
+    this.blobs.push({ dx: 0, dy: 0, rx: randomBetween(14, 22), ry: randomBetween(11, 18), angle: Math.random() * Math.PI });
 
     // satellite blobs — irregular, close to center
-    const count = Math.floor(randomBetween(7, 13));
+    const count = Math.floor(randomBetween(6, 10));
     for (let i = 0; i < count; i++) {
       const a = Math.random() * Math.PI * 2;
-      const dist = randomBetween(10, 48);
-      const rx = randomBetween(4, 18);
-      const ry = randomBetween(3, 14);
+      const dist = randomBetween(8, 28);
+      const rx = randomBetween(3, 11);
+      const ry = randomBetween(2, 8);
       this.blobs.push({ dx: Math.cos(a) * dist, dy: Math.sin(a) * dist, rx, ry, angle: Math.random() * Math.PI });
-    }
-
-    // tendrils — thick at base, tapering
-    const tendrilCount = Math.floor(randomBetween(6, 12));
-    for (let i = 0; i < tendrilCount; i++) {
-      const a = Math.random() * Math.PI * 2;
-      const len = randomBetween(40, 110);
-      const ca1 = a + randomBetween(-0.7, 0.7);
-      const ca2 = a + randomBetween(-0.5, 0.5);
-      this.tendrils.push({
-        angle: a, len,
-        cx1: Math.cos(ca1) * len * 0.3, cy1: Math.sin(ca1) * len * 0.3,
-        cx2: Math.cos(ca2) * len * 0.65, cy2: Math.sin(ca2) * len * 0.65,
-        width: randomBetween(1.5, 4)
-      });
-    }
-
-    // micro splats — tiny dots flying off
-    const splatCount = Math.floor(randomBetween(8, 18));
-    for (let i = 0; i < splatCount; i++) {
-      const a = Math.random() * Math.PI * 2;
-      const dist = randomBetween(55, 140);
-      this.splats.push({
-        dx: Math.cos(a) * dist + randomBetween(-10, 10),
-        dy: Math.sin(a) * dist + randomBetween(-10, 10),
-        r: randomBetween(1.5, 5)
-      });
     }
   }
 
   draw(ctx) {
     const t = Math.min(this.age / this.duration, 1);
     const spread = t < 0.25 ? t / 0.25 : 1;
-    // hold opaque for first 60%, then fade
     const alpha = t < 0.6 ? 1 : 1 - ((t - 0.6) / 0.4);
 
     ctx.save();
     ctx.translate(this.x, this.y);
 
-    // tendrils
-    this.tendrils.forEach(td => {
-      const s = Math.min(spread * 1.4, 1);
-      const endX = Math.cos(td.angle) * td.len * s;
-      const endY = Math.sin(td.angle) * td.len * s;
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.bezierCurveTo(td.cx1 * s, td.cy1 * s, td.cx2 * s, td.cy2 * s, endX, endY);
-      ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
-      ctx.lineWidth = td.width * (1 - t * 0.6);
-      ctx.lineCap = 'round';
-      ctx.stroke();
-    });
-
-    // main blobs — solid white, no gradient
+    // blobs only — solid white, no gradient
     this.blobs.forEach(blob => {
       const bx = blob.dx * spread;
       const by = blob.dy * spread;
@@ -967,15 +923,6 @@ class InkDrop {
       ctx.beginPath();
       ctx.ellipse(bx, by, rx, ry, blob.angle, 0, Math.PI * 2);
       ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-      ctx.fill();
-    });
-
-    // micro splats
-    const splatSpread = Math.min(spread * 1.6, 1);
-    this.splats.forEach(sp => {
-      ctx.beginPath();
-      ctx.arc(sp.dx * splatSpread, sp.dy * splatSpread, sp.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.9})`;
       ctx.fill();
     });
 
